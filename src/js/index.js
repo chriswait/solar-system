@@ -6,7 +6,7 @@ const HEIGHT = window.innerHeight;
 const ASPECT = WIDTH / HEIGHT;
 const NEAR =  0.1;
 const FAR = 10000;
-const VIEW_ANGLE = 45;
+const VIEW_ANGLE = 50;
 
 const SPHERE_SEGMENTS = 16;
 const SPHERE_RINGS = 16;
@@ -14,14 +14,14 @@ const SPHERE_RINGS = 16;
 var solarSystem = [
   {
     name: "sun",
-    radius: 80,
+    radius: 20,
     color: 0xffffff,
     star: {
     }
   },
   {
     name: "mercury",
-    radius: 30,
+    radius: 10,
     color: 0x4caf50,
     orbit: {
       radius: 400
@@ -29,7 +29,7 @@ var solarSystem = [
   },
   {
     name: "venus",
-    radius: 40,
+    radius: 12,
     color: 0xbbbbbb,
     orbit: {
       radius: 800
@@ -84,13 +84,28 @@ function init() {
   scene = new THREE.Scene();
   controls = new THREE.OrbitControls(camera);
   controls.target.set(0, 0, 0)
-  camera.position.x = -1500;
+  camera.position.x = -1000;
   camera.position.y = 300;
   scene.add(camera);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
   time = 0;
+
+  var loader = new THREE.TextureLoader();
+  loader.load(
+    'images/galaxy_starfield.png',
+    function(texture) {
+      var material = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: THREE.BackSide
+      });
+      var geometry = new THREE.SphereGeometry(1000, 32, 32);
+      var mesh = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+    }
+  );
+
   solarSystem.forEach(function(object) {
     object.mesh = getMeshForObject(object)
     object.mesh.position.set(0,0,0);
