@@ -1,55 +1,99 @@
-var t;
-var scene, camera, controls, renderer;
-var geometry, material, mesh;
-var sunGeo, sunMaterial, sunMat, sun;
-var mercuryGeo, mercuryMaterial, mercuryMat, mercury;
+var renderer, camera, scene, controls;
+var time;
+
+const WIDTH = window.innerWidth;
+const HEIGHT = window.innerHeight;
+const ASPECT = WIDTH / HEIGHT;
+const NEAR =  0.1;
+const FAR = 10000;
+const VIEW_ANGLE = 45;
+
+const SPHERE_SEGMENTS = 16;
+const SPHERE_RINGS = 16;
+
+var solarSystem = [
+  {
+    name: "sun",
+    radius: 80,
+    color: 0xffffff
+  },
+  {
+    name: "mercury",
+    radius: 30,
+    color: 0x4caf50,
+    orbit: {
+      radius: 400
+    }
+  },
+  {
+    name: "venus",
+    radius: 40,
+    color: 0xbbbbbb,
+    orbit: {
+      radius: 800
+    }
+  }
+];
+
+var getMeshForObject = function(object) {
+  var geometry, material, mesh;
+  geometry = new THREE.SphereGeometry(
+    object.radius,
+    SPHERE_SEGMENTS,
+    SPHERE_RINGS
+  );
+  material = new THREE.MeshBasicMaterial(
+    {
+      color: object.color
+    }
+  );
+  mesh = new THREE.Mesh(geometry, material);
+  return mesh;
+}
+var geOrbitMeshForObject = function(object) {
+  var geometry, material, mesh;
+  geometry = new THREE.CircleGeometry(50, 32, 32, Math.PI * 2 );
+  material = new THREE.MeshBasicMaterial({color: 0xffffff});
+  mesh = new THREE.Mesh(geometry, material);
+  return mesh;
+};
 
 function init() {
-  t = 0;
-  scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
-  controls = new THREE.OrbitControls(camera);
-  // controls.addEventListener('change', render);
-  controls.target.set(0, 0, 0)
-  camera.position.z = 1000;
-
-  sunGeo = new THREE.SphereGeometry(80, 32, 32);
-  sunMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
-  sun = new THREE.Mesh(sunGeo, sunMaterial);
-  sun.position.set(0,0,0);
-  scene.add(sun);
-
-  mercuryGeo = new THREE.SphereGeometry(50, 32, 32);
-  mercuryMaterial = new THREE.MeshBasicMaterial({color: 0x4caf50});
-  mercury = new THREE.Mesh(mercuryGeo, mercuryMaterial);
-  mercury.position.set(0,0,0);
-  scene.add(mercury);
-
-  mercuryPathGeo = new THREE.CircleGeometry( 50, 32, 32, Math.PI * 2 );
-  mercuryPathMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
-  mercuryPath = new THREE.Mesh(mercuryPathGeo, mercuryPathMaterial);
-  mercuryPath.position.set(0,0,0);
-  scene.add(mercuryPath);
-
   renderer = new THREE.WebGLRenderer();
+  camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+  scene = new THREE.Scene();
+  controls = new THREE.OrbitControls(camera);
+  controls.target.set(0, 0, 0)
+  camera.position.z = -1000;
+  scene.add(camera);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
+
+  time = 0;
+  solarSystem.forEach(function(object) {
+    object.mesh = getMeshForObject(object)
+    object.mesh.position.set(0,0,0);
+    scene.add(object.mesh);
+    if (object.orbit) {
+      object.orbit.mesh = geOrbitMeshForObject(object);
+      object.orbit.mesh.position.set(0,0,0);
+      scene.add(object.orbit.mesh);
+    }
+  });
 }
 
 function render() {
-  requestAnimationFrame(render);
-  t += 0.01;
-  // sun.rotation.y += 0.005;
-  // mercury.rotation.y += 0.03;
-
-  mercury.position.x = 400*Math.cos(t) + 0;
-  mercury.position.z = 400*Math.sin(t) + 0; // These to strings make it work
-  // console.log(t);
-  // console.log(sun.rotation.x, sun.rotation.y);
-  // console.log(mercury.rotation.x, mercury.rotation.y);
+  time += 0.01;
+  solarSystem.forEach(function(object) {
+    if (object.orbit && object.orbit.mesh) {
+      object.mesh.position.x = object.orbit.radius * Math.cos(time);
+      object.mesh.position.z = object.orbit.radius * Math.sin(time);
+    }
+  });
   controls.update();
   renderer.render(scene, camera);
+  requestAnimationFrame(render);
 }
 
 init();
-render();
+requestAnimationFrame(render);
