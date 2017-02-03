@@ -1,6 +1,19 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 // var sass = require('gulp-sass');
+var browserSync = require('browser-sync');
+
+gulp.task('browser-sync', function() {
+  browserSync.init({
+    server: {
+      baseDir: "./"
+    }
+  });
+});
+
+gulp.task('reload', function() {
+  browserSync.reload();
+});
 
 var vendorPath = [
   'node_modules/three/build/three.min.js',
@@ -30,8 +43,8 @@ gulp.task('css', function () {
 
 gulp.task('watch', function () {
   gulp.watch(vendorPath, ['vendor']);
-  gulp.watch(jsPath, ['js']);
-  gulp.watch(cssPath, ['css']);
+  gulp.watch(jsPath, ['js',  'reload']);
+  gulp.watch(cssPath, ['css',  'reload']);
 });
 
-gulp.task('default', ['vendor', 'js', 'css', 'watch']);
+gulp.task('default', ['vendor', 'js', 'css', 'watch', 'browser-sync']);
