@@ -52,8 +52,14 @@ var getMeshForObject = function(object) {
 }
 var geOrbitMeshForObject = function(object) {
   var geometry, material, mesh;
-  geometry = new THREE.CircleGeometry(50, 32, 32, Math.PI * 2 );
-  material = new THREE.MeshBasicMaterial({color: 0xffffff});
+  geometry = new THREE.RingGeometry(
+    object.orbit.radius+2,
+    object.orbit.radius-2,
+    360
+  );
+  material = new THREE.MeshBasicMaterial({
+    color: object.color
+  });
   mesh = new THREE.Mesh(geometry, material);
   return mesh;
 };
@@ -64,7 +70,8 @@ function init() {
   scene = new THREE.Scene();
   controls = new THREE.OrbitControls(camera);
   controls.target.set(0, 0, 0)
-  camera.position.z = -1000;
+  camera.position.x = -1500;
+  camera.position.y = 300;
   scene.add(camera);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
@@ -76,7 +83,8 @@ function init() {
     scene.add(object.mesh);
     if (object.orbit) {
       object.orbit.mesh = geOrbitMeshForObject(object);
-      object.orbit.mesh.position.set(0,0,0);
+      object.orbit.mesh.position.set(0, 0, 0);
+      object.orbit.mesh.rotation.set(Math.PI/2, 0, 0);
       scene.add(object.orbit.mesh);
     }
   });
