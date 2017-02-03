@@ -15,7 +15,9 @@ var solarSystem = [
   {
     name: "sun",
     radius: 80,
-    color: 0xffffff
+    color: 0xffffff,
+    star: {
+    }
   },
   {
     name: "mercury",
@@ -37,19 +39,31 @@ var solarSystem = [
 
 var getMeshForObject = function(object) {
   var geometry, material, mesh;
-  geometry = new THREE.SphereGeometry(
-    object.radius,
-    SPHERE_SEGMENTS,
-    SPHERE_RINGS
-  );
-  material = new THREE.MeshBasicMaterial(
-    {
-      color: object.color
-    }
-  );
+    geometry = new THREE.SphereGeometry(
+      object.radius,
+      SPHERE_SEGMENTS,
+      SPHERE_RINGS
+    );
+  if (object.star) {
+    material = new THREE.MeshDepthMaterial(
+      {
+        color: object.color
+      }
+    );
+  } else {
+    material = new THREE.MeshLambertMaterial(
+      {
+        color: object.color
+      }
+    );
+  }
   mesh = new THREE.Mesh(geometry, material);
   return mesh;
 }
+var getLightForObject = function(object) {
+  var light = new THREE.PointLight(object.color, 1, 0);
+  return light;
+};
 var geOrbitMeshForObject = function(object) {
   var geometry, material, mesh;
   geometry = new THREE.RingGeometry(
@@ -81,6 +95,11 @@ function init() {
     object.mesh = getMeshForObject(object)
     object.mesh.position.set(0,0,0);
     scene.add(object.mesh);
+    if (object.star) {
+      object.star.mesh = getLightForObject(object);
+      object.star.mesh.position.set(0, 0, 0);
+      scene.add(object.star.mesh);
+    }
     if (object.orbit) {
       object.orbit.mesh = geOrbitMeshForObject(object);
       object.orbit.mesh.position.set(0, 0, 0);
