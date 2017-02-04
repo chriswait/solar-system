@@ -5,7 +5,7 @@ var concat = require('gulp-concat');
 var browserSync = require('browser-sync');
 var sass = require('gulp-sass');
 
-var jsEntry = './src/js/app';
+var jsEntry = './src/js/main';
 var jsPath = './src/js/*.js';
 var sassPath = './src/sass/*.scss';
 var distPath = './dist';

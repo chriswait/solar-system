@@ -3,38 +3,42 @@ import OrbitControls from './controls';
 import {Mechanics} from './mechanics';
 import {Screen} from './screen';
 import {Universe} from './universe';
-let universe, screen, controls;
 
-function init() {
-  screen = new Screen();
-  screen.loadStars();
-  controls = new OrbitControls(screen.camera);
-  controls.target.set(0, 0, 0)
+export class App {
+  universe;
+  screen;
+  controls;
+  constructor() {
+  }
+  init() {
+    this.screen = new Screen();
+    this.screen.loadStars();
+    this.controls = new OrbitControls(this.screen.camera);
+    this.controls.target.set(0, 0, 0)
 
-  universe = new Universe(SolarSystemData);
-  universe.objects.forEach(function(object) {
-    object.mesh = screen.drawObject(object);
-    if (object.star) {
-      object.star.mesh = screen.drawLightForObject(object);
-    }
-    if (object.orbit) {
-      object.orbit.mesh = screen.drawOrbitForObject(object);
-    }
-  });
+    this.universe = new Universe(SolarSystemData);
+    this.universe.objects.forEach((object) => {
+      object.mesh = this.screen.drawObject(object);
+      if (object.star) {
+        object.star.mesh = this.screen.drawLightForObject(object);
+      }
+      if (object.orbit) {
+        object.orbit.mesh = this.screen.drawOrbitForObject(object);
+      }
+    });
+    requestAnimationFrame(this.render.bind(this));
+  }
+
+  render() {
+    this.universe.step();
+    this.universe.objects.forEach((object) => {
+      if (object.orbit) {
+        var newPosition = Mechanics.getPositionForObjectAtTime(object, this.universe.time);
+        object.mesh.position.copy(newPosition);
+      }
+    });
+    this.controls.update();
+    this.screen.render();
+    requestAnimationFrame(this.render.bind(this));
+  }
 }
-
-function render() {
-  universe.step();
-  universe.objects.forEach(function(object) {
-    if (object.orbit) {
-      var newPosition = Mechanics.getPositionForObjectAtTime(object, universe.time);
-      object.mesh.position.copy(newPosition);
-    }
-  });
-  controls.update();
-  screen.render();
-  requestAnimationFrame(render);
-}
-
-init();
-requestAnimationFrame(render);
