@@ -21,7 +21,7 @@ var SolarSystemData = [
           perhelionLongitudeDegrees: 77.45779628,
           ascendingNodeLongitudeDegrees: 48.33076593
         },
-        rate: {
+        rates: {
             semiMajorAxisAu: 0.00000037,
             eccentricity: 0.00001906,
             inclinationDegrees: -0.00594749,
@@ -47,7 +47,7 @@ var SolarSystemData = [
             perhelionLongitudeDegrees: 131.60246718,
             ascendingNodeLongitudeDegrees: 76.67984255
         },
-        rate: {
+        rates: {
             semiMajorAxisAu: 0.00000390,
             eccentricity: -0.00004107,
             inclinationDegrees: -0.00078890,
@@ -73,7 +73,7 @@ var SolarSystemData = [
             perhelionLongitudeDegrees: 102.93768193,
             ascendingNodeLongitudeDegrees: 0.0
         },
-        rate: {
+        rates: {
             semiMajorAxisAu: 0.00000562,
             eccentricity: -0.00004392,
             inclinationDegrees: -0.01294668,
@@ -99,7 +99,7 @@ var SolarSystemData = [
             perhelionLongitudeDegrees: -23.94362959,
             ascendingNodeLongitudeDegrees: 49.55953891
         },
-        rate: {
+        rates: {
             semiMajorAxisAu: 0.00001847,
             eccentricity: 0.00007882,
             inclinationDegrees: -0.00813131,
@@ -125,7 +125,7 @@ var SolarSystemData = [
             perhelionLongitudeDegrees: 14.72847983,
             ascendingNodeLongitudeDegrees: 100.47390909
         },
-        rate: {
+        rates: {
             semiMajorAxisAu: -0.00011607,
             eccentricity: -0.00013253,
             inclinationDegrees: -0.00183714,
@@ -151,7 +151,7 @@ var SolarSystemData = [
             perhelionLongitudeDegrees: 92.59887831,
             ascendingNodeLongitudeDegrees: 113.66242448
         },
-        rate: {
+        rates: {
             semiMajorAxisAu: -0.00125060,
             eccentricity: -0.00050991,
             inclinationDegrees: 0.00193609,
@@ -177,7 +177,7 @@ var SolarSystemData = [
             perhelionLongitudeDegrees: 170.95427630,
             ascendingNodeLongitudeDegrees: 74.01692503
         },
-        rate: {
+        rates: {
             semiMajorAxisAu: -0.00196176,
             eccentricity: -0.00004397,
             inclinationDegrees: -0.00242939,
@@ -203,7 +203,7 @@ var SolarSystemData = [
             perhelionLongitudeDegrees: 44.96476227,
             ascendingNodeLongitudeDegrees: 131.78422574
         },
-        rate: {
+        rates: {
             semiMajorAxisAu: 0.00026291,
             eccentricity: 0.00005105,
             inclinationDegrees: 0.00035372,
@@ -229,7 +229,7 @@ var SolarSystemData = [
             perhelionLongitudeDegrees: 224.06891629,
             ascendingNodeLongitudeDegrees: 110.30393684
         },
-        rate: {
+        rates: {
             semiMajorAxisAu: -0.00031596,
             eccentricity: 0.00005170,
             inclinationDegrees: 0.00004818,

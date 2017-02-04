@@ -33,6 +33,7 @@ export class App {
     this.universe.step();
     this.universe.objects.forEach((object) => {
       if (object.orbit) {
+        // let newKeplerianElements = Mechanics.getCurrentKeplerianElements(object);
         var newPosition = Mechanics.getPositionForObjectAtTime(object, this.universe.time);
         object.mesh.position.copy(newPosition);
       }
