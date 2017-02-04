@@ -3,11 +3,11 @@ var plumber = require('gulp-plumber');
 var webpack = require('webpack-stream');
 var concat = require('gulp-concat');
 var browserSync = require('browser-sync');
-// var sass = require('gulp-sass');
+var sass = require('gulp-sass');
 
 var jsEntry = './src/js/app';
 var jsPath = './src/js/*.js';
-var cssPath = './src/css/*.css';
+var sassPath = './src/sass/*.scss';
 var distPath = './dist';
 
 var webpackConfig = {
@@ -46,19 +46,20 @@ gulp.task('js-watch', ['js'], function(done) {
   done();
 });
 
-gulp.task('css-watch', function () {
-  var stream = gulp.src(cssPath)
+gulp.task('sass-watch', function () {
+  var stream = gulp.src(sassPath)
+  .pipe(sass())
   .pipe(concat('app.css'))
   .pipe(gulp.dest(distPath));
   return stream;
 });
 
-gulp.task('default', ['css-watch', 'js-watch'], function() {
+gulp.task('default', ['sass-watch', 'js-watch'], function() {
   browserSync.init({
     server: {
       baseDir: './'
     }
   });
   gulp.watch(jsPath, ['js-watch']);
-  gulp.watch(jsPath, ['css-watch']);
+  gulp.watch(jsPath, ['sass-watch']);
 });
