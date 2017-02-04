@@ -1,37 +1,41 @@
 var gulp = require('gulp');
+var plumber = require('gulp-plumber');
+var webpack = require('webpack-stream');
 var concat = require('gulp-concat');
-// var sass = require('gulp-sass');
 var browserSync = require('browser-sync');
+// var sass = require('gulp-sass');
 
-gulp.task('browser-sync', function() {
-  browserSync.init({
-    server: {
-      baseDir: "./"
+var jsEntry = './src/js/index';
+var jsPath = './src/js/*.js';
+var cssPath = './src/css/*.css';
+var distPath = './dist';
+
+gulp.task('webpack', function() {
+  return gulp.src(jsPath)
+  .pipe(plumber())
+  .pipe(webpack({
+    entry: [
+      'babel-polyfill',
+      jsEntry
+    ],
+    output: {
+      filename: 'app.js'
+    },
+    debug: true,
+    devtool: 'source-map',
+    module: {
+      loaders: [
+        {
+          test: /.js?$/,
+          loader: 'babel-loader',
+          exclude: /node_modules/,
+          query: {
+            presets: ['es2015']
+          }
+        }
+      ]
     }
-  });
-});
-
-gulp.task('reload', function() {
-  browserSync.reload();
-});
-
-var vendorPath = [
-  'node_modules/three/build/three.min.js',
-  'node_modules/three/examples/js/controls/OrbitControls.js'
-];
-var jsPath = 'src/js/*.js';
-var cssPath = 'src/css/*.css';
-var distPath = 'dist/';
-
-gulp.task('vendor', function () {
-  gulp.src(vendorPath)
-  .pipe(concat('vendor.js'))
-  .pipe(gulp.dest(distPath));
-});
-
-gulp.task('js', function () {
-  gulp.src(jsPath)
-  .pipe(concat('app.js'))
+  }))
   .pipe(gulp.dest(distPath));
 });
 
@@ -41,10 +45,22 @@ gulp.task('css', function () {
   .pipe(gulp.dest(distPath));
 });
 
+gulp.task('build', ['webpack', 'css']);
+
+gulp.task('serve', ['build'], function() {
+  browserSync.init({
+    server: {
+      baseDir: './'
+    }
+  });
+});
+gulp.task('reload', function() {
+  browserSync.reload();
+});
 gulp.task('watch', function () {
-  gulp.watch(vendorPath, ['vendor']);
-  gulp.watch(jsPath, ['js',  'reload']);
+  gulp.watch(jsPath, ['webpack',  'reload']);
   gulp.watch(cssPath, ['css',  'reload']);
 });
 
-gulp.task('default', ['vendor', 'js', 'css', 'watch', 'browser-sync']);
+
+gulp.task('default', ['serve', 'watch']);
