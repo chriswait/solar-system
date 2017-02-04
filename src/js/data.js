@@ -1,4 +1,4 @@
-var solarSystem = [
+var SolarSystemData = [
   {
     name: "sun",
     radius: 20,
@@ -7,21 +7,12 @@ var solarSystem = [
     }
   },
   {
-    name: "mercury",
-    radius: 10,
-    color: 0x4caf50,
-    orbit: {
-      radius: 400
-    }
-  },
-  {
-    name: "venus",
+    name: "earth",
     radius: 12,
-    color: 0xbbbbbb,
+    color: 0x4caf50,
     orbit: {
       radius: 800
     }
   }
 ];
-
-export {solarSystem};
+export {SolarSystemData};

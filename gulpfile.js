@@ -5,62 +5,60 @@ var concat = require('gulp-concat');
 var browserSync = require('browser-sync');
 // var sass = require('gulp-sass');
 
-var jsEntry = './src/js/index';
+var jsEntry = './src/js/app';
 var jsPath = './src/js/*.js';
 var cssPath = './src/css/*.css';
 var distPath = './dist';
 
-gulp.task('webpack', function() {
-  return gulp.src(jsPath)
-  .pipe(plumber())
-  .pipe(webpack({
-    entry: [
-      'babel-polyfill',
-      jsEntry
-    ],
-    output: {
-      filename: 'app.js'
-    },
-    debug: true,
-    devtool: 'source-map',
-    module: {
-      loaders: [
-        {
-          test: /.js?$/,
-          loader: 'babel-loader',
-          exclude: /node_modules/,
-          query: {
-            presets: ['es2015']
-          }
+var webpackConfig = {
+  entry: [
+    'babel-polyfill',
+    jsEntry
+  ],
+  output: {
+    filename: 'app.js'
+  },
+  debug: true,
+  devtool: 'source-map',
+  module: {
+    loaders: [
+      {
+        test: /.js?$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+        query: {
+          presets: ['es2015'],
+          plugins: ['transform-class-properties']
         }
-      ]
-    }
-  }))
+      }
+    ]
+  }
+};
+gulp.task('js', function() {
+  var stream = gulp.src(jsPath)
+  .pipe(plumber())
+  .pipe(webpack(webpackConfig))
   .pipe(gulp.dest(distPath));
+  return stream;
+});
+gulp.task('js-watch', ['js'], function(done) {
+  browserSync.reload();
+  done();
 });
 
-gulp.task('css', function () {
-  gulp.src(cssPath)
+gulp.task('css-watch', function () {
+  var stream = gulp.src(cssPath)
   .pipe(concat('app.css'))
   .pipe(gulp.dest(distPath));
+  return stream;
 });
 
-gulp.task('build', ['webpack', 'css']);
-
-gulp.task('serve', ['build'], function() {
+gulp.task('default', ['css-watch', 'js-watch'], function() {
   browserSync.init({
     server: {
       baseDir: './'
     }
   });
+  gulp.watch(jsPath, ['js-watch']);
+  gulp.watch(jsPath, ['css-watch']);
 });
-gulp.task('reload', function() {
-  browserSync.reload();
-});
-gulp.task('watch', function () {
-  gulp.watch(jsPath, ['webpack',  'reload']);
-  gulp.watch(cssPath, ['css',  'reload']);
-});
-
-
-gulp.task('default', ['serve', 'watch']);
