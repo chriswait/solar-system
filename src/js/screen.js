@@ -15,7 +15,7 @@ const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
 const ASPECT = WIDTH / HEIGHT;
 const NEAR =  0.1;
-const FAR = 1000;
+const FAR = 2000;
 const VIEW_ANGLE = 90;
 
 const SPHERE_SEGMENTS = 16;
@@ -48,7 +48,7 @@ export class Screen {
         material = new MeshBasicMaterial({
           map: texture
         });
-        geometry = new SphereGeometry(2000, 32, 32);
+        geometry = new SphereGeometry(1000, 32, 32);
         mesh = new Mesh(geometry, material);
         mesh.material.side = BackSide;
         this.scene.add(mesh);
