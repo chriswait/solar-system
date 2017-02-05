@@ -103,10 +103,16 @@ export class UniverseObject {
   }
   getPositionAtCenturiesPastJ2000(currentCenturiesPastJ2000) {
     let currentElements, x, y, z, position;
-    currentElements = this.getKeplerianElementsAtCenturiesPastJ2000(currentCenturiesPastJ2000);
-    x = 0;
-    y = 0;
-    z = 0;
+    if (this.star) {
+      x = 0;
+      z = 0;
+      z = 0;
+    } else {
+      currentElements = this.getKeplerianElementsAtCenturiesPastJ2000(currentCenturiesPastJ2000);
+      x = 0;
+      y = 0;
+      z = 0;
+    }
     position = new Vector3(x, y, z);
     return position;
   }

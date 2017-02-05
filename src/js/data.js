@@ -8,10 +8,10 @@ var SolarSystemData = [
   },
   {
     name: 'mercury',
-    radius: 10,
-    color: 0xffffff,
+    radius: 2440,
+    color: 0x828282,
     orbit: {
-      radius: 200,
+      radius: 57900000,
       keplerianElements: {
         initial: {
           semiMajorAxisAu: 0.38709927,
@@ -34,10 +34,10 @@ var SolarSystemData = [
   },
   {
     name: 'venus',
-    radius: 10,
-    color: 0xffffff,
+    radius: 6052,
+    color: 0xa3743e,
     orbit: {
-      radius: 300,
+      radius: 108200000,
       keplerianElements: {
         initial: {
             semiMajorAxisAu: 0.72333566,
@@ -61,7 +61,7 @@ var SolarSystemData = [
   {
     name: 'earth',
     radius: 6371,
-    color: 'green',
+    color: 0x43643a,
     orbit: {
       radius: 149600000,
       keplerianElements: {
@@ -86,10 +86,10 @@ var SolarSystemData = [
   },
   {
     name: 'mars',
-    radius: 10,
-    color: 0xffffff,
+    radius: 3390,
+    color: 0xe24722,
     orbit: {
-      radius: 500,
+      radius: 227900000,
       keplerianElements: {
         initial: {
             semiMajorAxisAu: 1.52371034,
@@ -112,10 +112,10 @@ var SolarSystemData = [
   },
   {
     name: 'jupiter',
-    radius: 10,
-    color: 0xffffff,
+    radius: 69911,
+    color: 0xfafbf3,
     orbit: {
-      radius: 600,
+      radius: 778500000,
       keplerianElements: {
         initial: {
             semiMajorAxisAu: 5.20288700,
@@ -138,10 +138,10 @@ var SolarSystemData = [
   },
   {
     name: 'saturn',
-    radius: 10,
-    color: 0xffffff,
+    radius: 58232,
+    color: 0xd6b17a,
     orbit: {
-      radius: 700,
+      radius: 1429000000,
       keplerianElements: {
         initial: {
             semiMajorAxisAu: 9.53667594,
@@ -164,10 +164,10 @@ var SolarSystemData = [
   },
   {
     name: 'uranus',
-    radius: 10,
-    color: 0xffffff,
+    radius: 25362,
+    color: 0x44bfef,
     orbit: {
-      radius: 800,
+      radius: 2871000000,
       keplerianElements: {
         initial: {
             semiMajorAxisAu: 19.18916464,
@@ -190,10 +190,10 @@ var SolarSystemData = [
   },
   {
     name: 'neptune',
-    radius: 10,
-    color: 0xffffff,
+    radius: 24622,
+    color: 0x4772ff,
     orbit: {
-      radius: 900,
+      radius: 4498000000,
       keplerianElements: {
         initial: {
             semiMajorAxisAu: 30.06992276,
@@ -217,9 +217,9 @@ var SolarSystemData = [
   {
     name: 'pluto',
     radius: 1187,
-    color: 'red',
+    color: 0xe5bf9b,
     orbit: {
-      radius: 5906292480,
+      radius: 6051133000,
       keplerianElements: {
         initial: {
             semiMajorAxisAu: 39.48211675,
