@@ -4,6 +4,7 @@ var webpack = require('webpack-stream');
 var concat = require('gulp-concat');
 var browserSync = require('browser-sync');
 var sass = require('gulp-sass');
+var eslint = require('gulp-eslint');
 
 var jsEntry = './src/js/main';
 var jsPath = './src/js/*.js';
@@ -37,6 +38,8 @@ var webpackConfig = {
 gulp.task('js', function() {
   var stream = gulp.src(jsPath)
   .pipe(plumber())
+  .pipe(eslint())
+  .pipe(eslint.format())
   .pipe(webpack(webpackConfig))
   .pipe(gulp.dest(distPath));
   return stream;
