@@ -42,9 +42,10 @@ export class UniverseObject {
     }
     return meanAnomalyMod;
   }
-  EccAnom(eccentricityRadians,meanAnomalyMod,dp) {
+  EccAnom(eccentricityRadians,meanAnomalyMod) {
     // eccentricityRadians=eccentricity, meanAnomalyMod=mean anomaly,
     // dp=number of decimal places
+    var dp = 6;
     var pi=Math.PI, K=pi/180.0;
     var maxIter=30, i=0;
     var delta=Math.pow(10,-dp);
@@ -98,7 +99,8 @@ export class UniverseObject {
     }
     currentElements.argumentOfPerihelion = this.getArgumentOfPerihelion(currentElements.perihelionLongitudeDegrees, currentElements.ascendingNodeLongitudeDegrees);
     currentElements.meanAnomalyMod = this.getMeanAnomaly(currentElements.meanLongitudeDegrees, currentElements.perihelionLongitudeDegrees);
-    currentElements.eccentricAnomalyDegrees = this.getEccentricAnomaly(currentElements.eccentricityRadians, currentElements.meanAnomalyMod);
+    // currentElements.eccentricAnomalyDegrees = this.getEccentricAnomaly(currentElements.eccentricityRadians, currentElements.meanAnomalyMod);
+    currentElements.eccentricAnomalyDegrees = this.EccAnom(currentElements.eccentricityRadians, currentElements.meanAnomalyMod);
     return currentElements;
   }
   getHeliocentricCoordinatesFromElements(elements) {
@@ -161,10 +163,9 @@ export class UniverseObject {
       heliocentricCoordinates = this.getHeliocentricCoordinatesFromElements(currentElements);
       eclipticCoordinates = this.getEclipticCoordinatesFromHeliocentricCoordinates(currentElements, heliocentricCoordinates);
       j2000Coordinates = this.getJ2000CoordinatesFromEclipticCoordinates(currentElements, eclipticCoordinates);
-      let auInKM = Math.pow(1.496, 8);
-      x = j2000Coordinates.x * auInKM;
-      y = j2000Coordinates.z * auInKM;
-      z = j2000Coordinates.y * auInKM;
+      x = j2000Coordinates.x * this.orbit.radius;
+      y = j2000Coordinates.y * this.orbit.radius;
+      z = j2000Coordinates.z * this.orbit.radius;
     }
     position = new Vector3(x, y, z);
     return position;

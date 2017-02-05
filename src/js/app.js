@@ -4,7 +4,7 @@ import {Screen} from './screen';
 import {Universe} from './universe';
 import {Clock} from './clock';
 
-const CLOCK_RATE = 100;
+const CLOCK_RATE = 1000;
 
 export class App {
   screen;
@@ -45,6 +45,6 @@ export class App {
     this.screen.render();
     setTimeout(() => {
       requestAnimationFrame(this.render.bind(this));
-    }, CLOCK_RATE)
+    }, 1)
   }
 }

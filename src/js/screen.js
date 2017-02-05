@@ -34,7 +34,8 @@ export class Screen {
     this.renderer = new WebGLRenderer();
     this.camera = new PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
     this.scene = new Scene();
-    this.camera.position.y = 500;
+    this.camera.position.x = 20;
+    this.camera.position.y = 20;
     this.scene.add(this.camera);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);

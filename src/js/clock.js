@@ -9,7 +9,8 @@ export class Clock {
     this.rateMilliseconds = rateMilliseconds;
   }
   tick() {
-    this.date.setMilliseconds(this.date.getMilliseconds() + this.rateMilliseconds);
+    // this.date.setMilliseconds(this.date.getMilliseconds() + this.rateMilliseconds);
+    this.date.setSeconds(this.date.getSeconds() + this.rateMilliseconds);
   }
   getCurrentJulianEphemerisDate() {
     let year, month, day, hour, min, sec, a, b, e, julianEphemerisDate;

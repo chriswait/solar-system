@@ -20,8 +20,9 @@ export class Universe {
     let currentCenturiesPastJ2000 = this.clock.getCurrentCenturiesPastJ2000();
     this.objects.forEach((object) => {
       let newPositionCalc = object.getPositionAtCenturiesPastJ2000(currentCenturiesPastJ2000);
-      let newPosition = object.getPositionAtT(t);
-      object.setCurrentPosition(newPosition);
+      console.log(newPositionCalc);
+      // let newPosition = object.getPositionAtT(t);
+      object.setCurrentPosition(newPositionCalc);
     });
   }
 }
