@@ -4,18 +4,26 @@ import {
 import {UniverseObject} from './universe-object';
 
 export class Universe {
-  time;
+  origin;
   objects;
-  constructor(solarSystemData) {
-    this.time = 0;
+  clock;
+  constructor(solarSystemData, clock) {
     this.origin = new Vector3(0, 0, 0)
     this.objects = [];
     for (let data of solarSystemData) {
       var object = new UniverseObject(data);
       this.objects.push(object);
     }
+    this.clock = clock;
   }
-  step() {
-    this.time += 0.01;
+  updatePositions() {
+    let currentCenturiesPastJ2000 = this.clock.getCurrentCenturiesPastJ2000();
+    this.objects.forEach((object) => {
+      if (object.orbit) {
+        object.orbit.keplerianElements.current = object.getCurrentKeplerianElements(currentCenturiesPastJ2000);
+        var newPosition = object.getPositionAtDate(this.clock.date);
+        object.setCurrentPosition(newPosition);
+      }
+    });
   }
 }

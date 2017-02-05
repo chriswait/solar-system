@@ -1,13 +1,16 @@
 import {SolarSystemData} from './data';
 import OrbitControls from './controls';
-import {Mechanics} from './mechanics';
 import {Screen} from './screen';
 import {Universe} from './universe';
+import {Clock} from './clock';
+
+const CLOCK_RATE = 100;
 
 export class App {
-  universe;
   screen;
   controls;
+  clock;
+  universe;
   constructor() {
   }
   init() {
@@ -15,8 +18,8 @@ export class App {
     this.screen.loadStars();
     this.controls = new OrbitControls(this.screen.camera);
     this.controls.target.set(0, 0, 0)
-
-    this.universe = new Universe(SolarSystemData);
+    this.clock = new Clock(new Date(), CLOCK_RATE);
+    this.universe = new Universe(SolarSystemData, this.clock);
     this.universe.objects.forEach((object) => {
       object.mesh = this.screen.drawObject(object);
       if (object.star) {
@@ -30,16 +33,17 @@ export class App {
   }
 
   render() {
-    this.universe.step();
+    this.clock.tick();
+    this.universe.updatePositions();
     this.universe.objects.forEach((object) => {
       if (object.orbit) {
-        // let newKeplerianElements = Mechanics.getCurrentKeplerianElements(object);
-        var newPosition = Mechanics.getPositionForObjectAtTime(object, this.universe.time);
-        object.mesh.position.copy(newPosition);
+        object.mesh.position.copy(object.getPositionAtDate(this.clock.date));
       }
     });
     this.controls.update();
     this.screen.render();
-    requestAnimationFrame(this.render.bind(this));
+    setTimeout(() => {
+      requestAnimationFrame(this.render.bind(this));
+    }, CLOCK_RATE)
   }
 }
