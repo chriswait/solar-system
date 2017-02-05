@@ -20,7 +20,7 @@ export class Universe {
     let currentCenturiesPastJ2000 = this.clock.getCurrentCenturiesPastJ2000();
     this.objects.forEach((object) => {
       if (object.orbit) {
-        object.orbit.keplerianElements.current = object.getCurrentKeplerianElements(currentCenturiesPastJ2000);
+        let newPositionCalc = object.getCurrentPosition(currentCenturiesPastJ2000);
         var newPosition = object.getPositionAtDate(this.clock.date);
         object.setCurrentPosition(newPosition);
       }
