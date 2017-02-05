@@ -11,9 +11,11 @@ export class App {
   controls;
   clock;
   universe;
+  t;
   constructor() {
   }
   init() {
+    this.t = 0;
     this.screen = new Screen();
     this.screen.loadStars();
     this.controls = new OrbitControls(this.screen.camera);
@@ -33,12 +35,11 @@ export class App {
   }
 
   render() {
+    this.t += 0.01;
     this.clock.tick();
-    this.universe.updatePositions();
+    this.universe.updatePositions(this.t);
     this.universe.objects.forEach((object) => {
-      if (object.orbit) {
-        object.mesh.position.copy(object.getPositionAtDate(this.clock.date));
-      }
+      this.screen.redrawObject(object);
     });
     this.controls.update();
     this.screen.render();

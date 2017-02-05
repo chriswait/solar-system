@@ -532,7 +532,7 @@ export default class OrbitControls extends EventDispatcher {
     }
 
     function handleMouseUp(event) {
-      console.log( 'handleMouseUp' );
+      // console.log( 'handleMouseUp' );
     }
 
     function handleMouseWheel(event) {

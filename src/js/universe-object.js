@@ -2,20 +2,26 @@ import {
   Vector3,
 } from 'three';
 
+
 export class UniverseObject {
   name;
   radius;
   color;
   orbit;
-  orbits;
+  star;
+
   mesh;
   currentPosition;
   constructor(object) {
-    for (let key of Object.keys(object)) {
-      if (object[key]) {
-        this[key] = object[key];
-      }
+    this.name = object.name;
+    this.radius = object.radius;
+    this.color = object.color;
+    if (object.orbit) {
+      this.orbit = {};
+      this.orbit.radius = object.orbit.radius;
+      this.orbit.keplerianElements = object.orbit.keplerianElements;
     }
+    this.star = object.star;
   }
   setCurrentPosition(newPosition) {
     if (typeof(this.currentPosition) === 'undefined') {
@@ -85,7 +91,7 @@ export class UniverseObject {
     eccentricAnomaly = eIter[currentIteration];
     return eccentricAnomaly;
   }
-  getCurrentKeplerianElements(currentCenturiesPastJ2000) {
+  getKeplerianElementsAtCenturiesPastJ2000(currentCenturiesPastJ2000) {
     let currentElements = {};
     for (let key in this.orbit.keplerianElements.initial) {
       currentElements[key] = this.orbit.keplerianElements.initial[key] + (this.orbit.keplerianElements.rates[key] * currentCenturiesPastJ2000);
@@ -95,21 +101,25 @@ export class UniverseObject {
     currentElements.eccentricAnomalyDegrees = this.getEccentricAnomaly(currentElements.eccentricityRadians, currentElements.meanAnomalyMod);
     return currentElements;
   }
-  getCurrentPosition(currentCenturiesPastJ2000) {
+  getPositionAtCenturiesPastJ2000(currentCenturiesPastJ2000) {
     let currentElements, x, y, z, position;
-    currentElements = this.getCurrentKeplerianElements(currentCenturiesPastJ2000);
+    currentElements = this.getKeplerianElementsAtCenturiesPastJ2000(currentCenturiesPastJ2000);
     x = 0;
     y = 0;
     z = 0;
     position = new Vector3(x, y, z);
     return position;
   }
-  getPositionAtDate(date) {
-    // TODO - replace this with actual logic
+  getPositionAtT(t) {
     let x, y, z;
     let position;
-    x = this.orbit.radius * Math.cos(date);
-    z = this.orbit.radius * Math.sin(date);
+    if (this.star) {
+      x = 0;
+      z = 0;
+    } else {
+      x = this.orbit.radius * Math.cos(t);
+      z = this.orbit.radius * Math.sin(t);
+    }
     y = 0;
     position = new Vector3(x, y, z);
     return position;

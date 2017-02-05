@@ -1,8 +1,8 @@
 var SolarSystemData = [
   {
     name: "sun",
-    radius: 20,
-    color: 0xffffff,
+    radius: 695700,
+    color: 'yellow',
     star: {
     }
   },
@@ -60,10 +60,10 @@ var SolarSystemData = [
   },
   {
     name: 'earth',
-    radius: 10,
-    color: 0xffffff,
+    radius: 6371,
+    color: 'green',
     orbit: {
-      radius: 400,
+      radius: 149600000,
       keplerianElements: {
         initial: {
             semiMajorAxisAu: 1.00000261,
@@ -216,10 +216,10 @@ var SolarSystemData = [
   },
   {
     name: 'pluto',
-    radius: 10,
-    color: 0xffffff,
+    radius: 1187,
+    color: 'red',
     orbit: {
-      radius: 1000,
+      radius: 5906292480,
       keplerianElements: {
         initial: {
             semiMajorAxisAu: 39.48211675,
