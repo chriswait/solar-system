@@ -170,18 +170,4 @@ export class UniverseObject {
     position = new Vector3(x, y, z);
     return position;
   }
-  getPositionAtT(t) {
-    let x, y, z;
-    let position;
-    if (this.star) {
-      x = 0;
-      z = 0;
-    } else {
-      x = this.orbit.radius * Math.cos(t);
-      z = this.orbit.radius * Math.sin(t);
-    }
-    y = 0;
-    position = new Vector3(x, y, z);
-    return position;
-  }
 }
