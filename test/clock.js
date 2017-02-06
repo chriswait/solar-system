@@ -17,7 +17,8 @@ describe('clock', function() {
     clock = new Clock(new Date(), rateSeconds);
     clock.tick();
     now = new Date();
-    expect(clock.date.getTime()).to.equal(now.getTime() + rateSeconds);
+    let diff = Math.abs(clock.date.getTime() - (now.getTime() + rateSeconds));
+    expect(diff).to.be.below(0.1);
   });
   it('should return correct julian date', function() {
     // var testDate = new Date('09/09/2010');
@@ -31,8 +32,10 @@ describe('clock', function() {
   });
   it('should return correct centuries past J2000', function() {
     var testDate = new Date('01/01/2000');
+    var testCenturies = 0;
     clock = new Clock(testDate, rateSeconds);
     let centuries = clock.getCurrentCenturiesPastJ2000();
-    expect(Math.abs(centuries)).to.be.below(0.0001);
+    let diff = Math.abs(testCenturies - centuries);
+    expect(diff).to.be.below(0.0001);
   });
 });

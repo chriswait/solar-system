@@ -45,7 +45,7 @@ gulp.task('lint-js', function() {
   .pipe(eslint.format());
   return stream;
 });
-gulp.task('js', function() {
+gulp.task('js', ['lint-js'], function() {
   var stream = gulp.src(jsPath)
   .pipe(plumber())
   .pipe(webpack(webpackConfig))
@@ -80,12 +80,13 @@ gulp.task('sass-watch', function () {
   return stream;
 });
 
-gulp.task('default', ['sass-watch', 'js-watch', 'test-watch'], function() {
+gulp.task('build', ['sass-watch', 'js']);
+gulp.task('default', ['sass-watch', 'js-watch', 'test'], function() {
   browserSync.init({
     server: {
       baseDir: './'
     }
   });
   gulp.watch(jsPath, ['js-watch']);
-  gulp.watch(jsPath, ['sass-watch']);
+  gulp.watch(sassPath, ['sass-watch']);
 });
