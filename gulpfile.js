@@ -5,11 +5,14 @@ var concat = require('gulp-concat');
 var browserSync = require('browser-sync');
 var sass = require('gulp-sass');
 var eslint = require('gulp-eslint');
+var mocha = require('gulp-mocha');
 
 var jsEntry = './src/js/main';
 var jsPath = './src/js/*.js';
 var sassPath = './src/sass/*.scss';
 var distPath = './dist';
+var testPath = './test/*.js';
+var testHelperPath = './test/testHelper.js';
 
 var webpackConfig = {
   entry: [
@@ -35,11 +38,16 @@ var webpackConfig = {
     ]
   }
 };
-gulp.task('js', function() {
+gulp.task('lint-js', function() {
   var stream = gulp.src(jsPath)
   .pipe(plumber())
   .pipe(eslint())
-  .pipe(eslint.format())
+  .pipe(eslint.format());
+  return stream;
+});
+gulp.task('js', function() {
+  var stream = gulp.src(jsPath)
+  .pipe(plumber())
   .pipe(webpack(webpackConfig))
   .pipe(gulp.dest(distPath));
   return stream;
@@ -47,6 +55,21 @@ gulp.task('js', function() {
 gulp.task('js-watch', ['js'], function(done) {
   browserSync.reload();
   done();
+});
+var mochaConfig = {
+  compilers: [
+    'js:babel-core/register'
+  ]
+};
+gulp.task('test-watch', ['lint-js'], function() {
+  gulp.src(testHelperPath)
+  .pipe(plumber())
+  .pipe(
+    mocha(mochaConfig)
+  );
+});
+gulp.task('test', ['test-watch'], function() {
+  gulp.watch([jsPath, testPath], ['test-watch']);
 });
 
 gulp.task('sass-watch', function () {
@@ -57,7 +80,7 @@ gulp.task('sass-watch', function () {
   return stream;
 });
 
-gulp.task('default', ['sass-watch', 'js-watch'], function() {
+gulp.task('default', ['sass-watch', 'js-watch', 'test-watch'], function() {
   browserSync.init({
     server: {
       baseDir: './'

@@ -3,8 +3,12 @@
   "extends": "eslint:recommended",
   "env": {
     "node": true,
-    "browser": true
+    "browser": true,
+    "mocha": true
   },
+  "plugins": [
+    "mocha"
+  ],
   "rules": {
     "no-console": "off",
     "no-alert": "off"

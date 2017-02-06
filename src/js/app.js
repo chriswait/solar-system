@@ -4,7 +4,7 @@ import {Screen} from './screen';
 import {Universe} from './universe';
 import {Clock} from './clock';
 
-const CLOCK_RATE = 1000;
+const CLOCK_RATE_SECONDS = 1000000;
 
 export class App {
   screen;
@@ -20,7 +20,7 @@ export class App {
     this.screen.loadStars();
     this.controls = new OrbitControls(this.screen.camera);
     this.controls.target.set(0, 0, 0)
-    this.clock = new Clock(new Date(), CLOCK_RATE);
+    this.clock = new Clock(new Date(), CLOCK_RATE_SECONDS);
     this.universe = new Universe(SolarSystemData, this.clock);
     this.universe.objects.forEach((object) => {
       object.mesh = this.screen.drawObject(object);
