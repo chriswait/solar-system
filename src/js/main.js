@@ -1,4 +1,8 @@
 import {App} from './app';
 
-let app = new App();
-app.init();
+if (window.WebGLRenderingContext) {
+  let app = new App();
+  app.init();
+} else {
+  window.location = 'http://get.webgl.org/';
+}
