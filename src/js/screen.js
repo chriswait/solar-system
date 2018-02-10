@@ -49,7 +49,7 @@ export class Screen {
   loadStars() {
     var loader = new TextureLoader();
     loader.load(
-      'images/galaxy_starfield.png',
+      'src/images/galaxy_starfield.png',
       (texture) => {
         let material, geometry, mesh;
         material = new MeshBasicMaterial({
