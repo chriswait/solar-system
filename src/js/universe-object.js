@@ -1,6 +1,9 @@
 import {
   Vector3,
+  Euler,
+  Quaternion
 } from 'three';
+import {Util} from './util';
 
 
 export class UniverseObject {
@@ -11,58 +14,77 @@ export class UniverseObject {
   star;
 
   mesh;
-  currentPosition;
+  position;
   constructor(object) {
     this.name = object.name;
     this.radius = object.radius;
     this.color = object.color;
     if (object.orbit) {
       this.orbit = {};
-      this.orbit.radius = object.orbit.radius;
       this.orbit.keplerianElements = object.orbit.keplerianElements;
     }
     this.star = object.star;
   }
-  setCurrentPosition(newPosition) {
-    if (typeof(this.currentPosition) === 'undefined') {
-      this.currentPosition = newPosition;
+  setPosition(newPosition) {
+    if (typeof(this.position) === 'undefined') {
+      this.position = newPosition;
     } else {
-      this.currentPosition.copy(newPosition);
+      this.position.copy(newPosition);
     }
   }
-  getArgumentOfPerihelion(perihelionLongitudeDegrees, ascendingNodeLongitudeDegrees) {
-    let argumentOfPerihelion = perihelionLongitudeDegrees - ascendingNodeLongitudeDegrees;
-    return argumentOfPerihelion;
-  }
-  getMeanAnomaly(meanLongitudeDegrees, perihelionLongitudeDegrees) {
-    let meanAnomaly = meanLongitudeDegrees - perihelionLongitudeDegrees;
-    let meanAnomalyMod = (meanAnomaly % 360);
-    if (meanAnomalyMod < 0) {
-      meanAnomalyMod += 360;
+
+  getEccentricAnomaly2(eccentricityRadians, meanAnomalyRadians) {
+    var solveKepler = function(e, M) {
+      return function(x) {
+        return x + (M + e * Math.sin(x) - x) / (1 - e * Math.cos(x));
+      };
+    };
+
+    var solveKeplerLaguerreConway = function(e, M) {
+      return function(x) {
+        var s = e * Math.sin(x);
+        var c = e * Math.cos(x);
+        var f = x - s - M;
+        var f1 = 1 - c;
+        var f2 = s;
+
+        x += -5 * f / (f1 + CMath.sign(f1) * Math.sqrt(Math.abs(16 * f1 * f1 - 20 * f * f2)));
+        return x;
+      };
+    };
+
+    var solveKeplerLaguerreConwayHyp = function(e, M) {
+      return function(x) {
+        var s = e * CMath.sinh(x);
+        var c = e * CMath.cosh(x);
+        var f = x - s - M;
+        var f1 = c - 1;
+        var f2 = s;
+
+        x += -5 * f / (f1 + CMath.sign(f1) * Math.sqrt(Math.abs(16 * f1 * f1 - 20 * f * f2)));
+        return x;
+      };
+    };
+
+    if (e == 0.0) {
+      return M;
+    }  else if (e < 0.9) {
+      var sol = solveEccentricAnomaly(solveKepler(e, M), M, 6);
+      return sol;
+    } else if (e < 1.0) {
+      var E = M + 0.85 * e * ((Math.sin(M) >= 0.0) ? 1 : -1);
+      var sol = solveEccentricAnomaly(solveKeplerLaguerreConway(e, M), E, 8);
+      return sol;
+    } else if (e == 1.0) {
+      return M;
+    } else {
+      var E = Math.log(2 * M / e + 1.85);
+      var sol = solveEccentricAnomaly(solveKeplerLaguerreConwayHyp(e, M), E, 30);
+      return sol;
     }
-    return meanAnomalyMod;
   }
-  EccAnom(eccentricityRadians,meanAnomalyMod) {
-    // eccentricityRadians=eccentricity, meanAnomalyMod=mean anomaly,
-    // dp=number of decimal places
-    var dp = 6;
-    var pi=Math.PI, K=pi/180.0;
-    var maxIter=30, i=0;
-    var delta=Math.pow(10,-dp);
-    var E, F;
-    meanAnomalyMod=meanAnomalyMod/360.0;
-    meanAnomalyMod=2.0*pi*(meanAnomalyMod-Math.floor(meanAnomalyMod));
-    if (eccentricityRadians<0.8) E=meanAnomalyMod; else E=pi;
-    F = E - eccentricityRadians*Math.sin(meanAnomalyMod) - meanAnomalyMod;
-    while ((Math.abs(F)>delta) && (i<maxIter)) {
-      E = E - F/(1.0-eccentricityRadians*Math.cos(E));
-      F = E - eccentricityRadians*Math.sin(E) - meanAnomalyMod;
-      i = i + 1;
-    }
-    E=E/K;
-    return Math.round(E*Math.pow(10,dp))/Math.pow(10,dp);
-  }
-  getEccentricAnomaly(eccentricityRadians, meanAnomalyMod) {
+
+  getEccentricAnomaly(eccentricityRadians, meanAnomalyRadians) {
     // obtains eccentric anomaly from the solution of Kepler's equation:
     // i.e find E such that M = E - e* sin(E)
     let eccentricAnomaly;
@@ -78,13 +100,13 @@ export class UniverseObject {
 
     // Solving kepler's equation
     // Start with E0 = M + e* sin(M)
-    eIter[0] = meanAnomalyMod + eccentricityDegrees * Math.sin(meanAnomalyMod);
+    eIter[0] = meanAnomalyRadians + eccentricityDegrees * Math.sin(meanAnomalyRadians);
 
     // Iterate until |delta E| <= tolerance:
     //  delta M = M - (En - e* sin(En)
     //  delta E = delta M / (1 - e sin(En)
     while (Math.abs(deltaE) > toleranceDegrees && currentIteration < maxIterations) {
-      deltaM = meanAnomalyMod - (eIter[currentIteration] - eccentricityDegrees * Math.sin(eIter[currentIteration]));
+      deltaM = meanAnomalyRadians - (eIter[currentIteration] - eccentricityDegrees * Math.sin(eIter[currentIteration]));
       deltaE = deltaM / (1 - eccentricityRadians * Math.cos(eIter[currentIteration]));
       eIter[currentIteration+1] = eIter[currentIteration] + deltaE;
       currentIteration += 1;
@@ -92,82 +114,56 @@ export class UniverseObject {
     eccentricAnomaly = eIter[currentIteration];
     return eccentricAnomaly;
   }
-  getKeplerianElementsAtCenturiesPastJ2000(currentCenturiesPastJ2000) {
-    let currentElements = {};
+
+  getElementsAtCenturiesPastJ2000(currentCenturiesPastJ2000) {
+    let elements = {
+      time: currentCenturiesPastJ2000
+    };
+
+    // Adjust from J2000 values
+    // elements courtesy of the JPL: semiMajorAxisAu, eccentricityRadians, inclinationDegrees, meanLongitudeDegrees, periapsisLongitudeDegrees, ascendingNodeLongitudeDegrees
     for (let key in this.orbit.keplerianElements.initial) {
-      currentElements[key] = this.orbit.keplerianElements.initial[key] + (this.orbit.keplerianElements.rates[key] * currentCenturiesPastJ2000);
+      elements[key] = this.orbit.keplerianElements.initial[key] + (this.orbit.keplerianElements.rates[key] * currentCenturiesPastJ2000);
     }
-    currentElements.argumentOfPerihelion = this.getArgumentOfPerihelion(currentElements.perihelionLongitudeDegrees, currentElements.ascendingNodeLongitudeDegrees);
-    currentElements.meanAnomalyMod = this.getMeanAnomaly(currentElements.meanLongitudeDegrees, currentElements.perihelionLongitudeDegrees);
-    // currentElements.eccentricAnomalyDegrees = this.getEccentricAnomaly(currentElements.eccentricityRadians, currentElements.meanAnomalyMod);
-    currentElements.eccentricAnomalyDegrees = this.EccAnom(currentElements.eccentricityRadians, currentElements.meanAnomalyMod);
-    return currentElements;
-  }
-  getHeliocentricCoordinatesFromElements(elements) {
-    let x, y, z, heliocentricCoordinates;
-    x = elements.semiMajorAxisAu * (Math.cos(elements.eccentricAnomalyDegrees) - elements.eccentricityRadians);
-    y = elements.semiMajorAxisAu * Math.sqrt(1 - Math.pow(elements.eccentricityRadians, 2));
-    z = 0;
-    heliocentricCoordinates = new Vector3(x, y, z);
-    return heliocentricCoordinates;
-  }
-  getEclipticCoordinatesFromHeliocentricCoordinates(elements, heliocentricCoordinates) {
-    let x, y, z, eclipticCoordinates;
-    let cosPerihelion = Math.cos(elements.perihelionLongitudeDegrees);
-    let sinPerihelion = Math.sin(elements.perihelionLongitudeDegrees);
-    let cosAscending = Math.cos(elements.ascendingNodeLongitudeDegrees);
-    let sinAscending = Math.sin(elements.ascendingNodeLongitudeDegrees);
-    let cosInclination = Math.cos(elements.inclinationDegrees);
-    let sinInclination = Math.sin(elements.inclinationDegrees);
 
-    x = (
-      (cosPerihelion * cosAscending) - (sinPerihelion * sinAscending * cosInclination) * heliocentricCoordinates.x
-    ) + (
-      (-sinPerihelion * cosAscending) - (cosPerihelion * sinAscending * cosInclination) * heliocentricCoordinates.y
+    // Compute required secondary elements
+    elements.periapsisArgumentDegrees = elements.periapsisLongitudeDegrees - elements.ascendingNodeLongitudeDegrees;
+    elements.meanAnomalyDegrees = elements.meanLongitudeDegrees - elements.periapsisLongitudeDegrees;
+
+    // Adjust some units
+    elements.semiMajorAxisMeters = Util.auToMeters(elements.semiMajorAxisAu);
+    elements.inclinationRadians = Util.degreesToRadians(elements.inclinationDegrees);
+    elements.ascendingNodeLongitudeRadians = Util.degreesToRadians(elements.ascendingNodeLongitudeDegrees);
+    elements.periapsisArgumentRadians = Util.degreesToRadians(elements.periapsisArgumentDegrees)
+    elements.meanAnomalyRadians = Util.degreesToRadians(elements.meanAnomalyDegrees);
+
+    // Compute the eccentric anomaly
+    elements.eccentricAnomalyRadians = this.getEccentricAnomaly(elements.eccentricityRadians, elements.meanAnomalyRadians);
+
+    // Mod angles to 2 PI radians
+    elements.eccentricAnomalyRadians = Util.modRadiansToCircle(elements.eccentricAnomalyRadians);
+    elements.inclinationRadians = Util.modRadiansToCircle(elements.inclinationRadians);
+    elements.ascendingNodeLongitudeRadians = Util.modRadiansToCircle(elements.ascendingNodeLongitudeRadians);
+    elements.periapsisArgumentRadians = Util.modRadiansToCircle(elements.periapsisArgumentRadians);
+    elements.meanAnomalyRadians = Util.modRadiansToCircle(elements.meanAnomalyRadians);
+
+    // Find position
+    elements.position = new Vector3(
+      elements.semiMajorAxisMeters * (Math.cos(elements.eccentricAnomalyRadians) - elements.eccentricityRadians),
+      elements.semiMajorAxisMeters * (Math.sqrt(1 - (elements.eccentricityRadians * elements.eccentricityRadians))) * Math.sin(elements.eccentricAnomalyRadians)
     );
-
-    y = (
-      (cosPerihelion * sinAscending) + (sinPerihelion * cosAscending * cosInclination) * heliocentricCoordinates.x
-    ) + (
-      (-sinPerihelion * sinAscending) + (cosPerihelion * cosAscending * cosInclination) * heliocentricCoordinates.y
-    );
-
-    z = (
-      (sinPerihelion * sinInclination) *  heliocentricCoordinates.x
-    ) + (
-      (cosPerihelion * sinInclination) * heliocentricCoordinates.y
-    );
-
-    eclipticCoordinates = new Vector3(x, y, z);
-    return eclipticCoordinates;
-  }
-  getJ2000CoordinatesFromEclipticCoordinates(currentElements, eclipticCoordinates) {
-    let x, y, z, j2000Coordinates;
-    let obliquity = 23.43928;
-    let sinOb = Math.sin(obliquity);
-    let cosOb = Math.cos(obliquity);
-    x = eclipticCoordinates.x;
-    y = (cosOb * eclipticCoordinates.y) - (sinOb * eclipticCoordinates.z);
-    z = (sinOb * eclipticCoordinates.y) + (cosOb * eclipticCoordinates.z);
-    j2000Coordinates =  new Vector3(x, y, z);
-    return j2000Coordinates;
+    elements.radius = elements.position.length();
+    // elements.v = Math.atan2(elements.position.y, elements.position.x);
+    return elements;
   }
   getPositionAtCenturiesPastJ2000(currentCenturiesPastJ2000) {
-    let currentElements, heliocentricCoordinates, eclipticCoordinates, j2000Coordinates, x, y, z, position;
-    if (this.star) {
-      x = 0;
-      z = 0;
-      z = 0;
-    } else {
-      currentElements = this.getKeplerianElementsAtCenturiesPastJ2000(currentCenturiesPastJ2000);
-      heliocentricCoordinates = this.getHeliocentricCoordinatesFromElements(currentElements);
-      eclipticCoordinates = this.getEclipticCoordinatesFromHeliocentricCoordinates(currentElements, heliocentricCoordinates);
-      j2000Coordinates = this.getJ2000CoordinatesFromEclipticCoordinates(currentElements, eclipticCoordinates);
-      x = j2000Coordinates.x * this.orbit.radius;
-      y = j2000Coordinates.y * this.orbit.radius;
-      z = j2000Coordinates.z * this.orbit.radius;
-    }
-    position = new Vector3(x, y, z);
-    return position;
+    let elements = this.getElementsAtCenturiesPastJ2000(currentCenturiesPastJ2000);
+    let euler1 = new Euler(elements.tilt || 0, 0, elements.ascendingNodeLongitudeRadians, 'XYZ');
+    let quaterion1 = new Quaternion().setFromEuler(euler1);
+    let euler2 = new Euler(elements.inclinationRadians, 0, elements.periapsisArgumentRadians, 'XYZ');
+    let quaterion2 = new Quaternion().setFromEuler(euler2);
+    let planeQuat = new Quaternion().multiplyQuaternions(quaterion1, quaterion2);
+    elements.position.applyQuaternion(planeQuat);
+    return elements.position;
   }
 }

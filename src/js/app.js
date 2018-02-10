@@ -4,22 +4,23 @@ import {Screen} from './screen';
 import {Universe} from './universe';
 import {Clock} from './clock';
 
-const CLOCK_RATE_SECONDS = 1000000;
+// const CLOCK_RATE_SECONDS = 1000000;
+const CLOCK_RATE_SECONDS = 1;
 
 export class App {
   screen;
   controls;
   clock;
   universe;
+  lastClockTime;
   constructor() {
   }
   init() {
-    this.screen = new Screen();
-    this.screen.loadStars();
-    this.controls = new OrbitControls(this.screen.camera);
-    this.controls.target.set(0, 0, 0)
     this.clock = new Clock(new Date(), CLOCK_RATE_SECONDS);
     this.universe = new Universe(SolarSystemData, this.clock);
+    this.screen = new Screen(this.universe);
+    this.controls = new OrbitControls(this.screen.camera);
+    this.controls.target.set(0, 0, 0)
     this.universe.objects.forEach((object) => {
       object.mesh = this.screen.drawObject(object);
       if (object.star) {
@@ -34,7 +35,12 @@ export class App {
 
   render() {
     this.clock.tick();
-    this.universe.updatePositions();
+    let currentTime = this.clock.getCurrentCenturiesPastJ2000();
+    if (currentTime != this.lastClockTime) {
+      this.universe.updatePositions();
+      console.log('tick');
+    }
+    this.lastClockTime = currentTime;
     this.universe.objects.forEach((object) => {
       this.screen.redrawObject(object);
     });
@@ -42,6 +48,6 @@ export class App {
     this.screen.render();
     setTimeout(() => {
       requestAnimationFrame(this.render.bind(this));
-    }, 1)
+    }, 10)
   }
 }

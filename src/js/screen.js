@@ -10,6 +10,7 @@ import {
   BackSide,
   Vector3
 } from 'three';
+import {Util} from './util';
 
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
@@ -22,23 +23,28 @@ const SPHERE_SEGMENTS = 16;
 const SPHERE_RINGS = 16;
 
 const ORBIT_MAX_UNITS = 500;
-const PLUTO_ORBIT_KM = 5906292480;
-const ORBIT_SCALE_FACTOR = ORBIT_MAX_UNITS / PLUTO_ORBIT_KM;
 
 export class Screen {
   renderer;
   camera;
   scene;
   controls;
-  constructor() {
+  constructor(universe) {
     this.renderer = new WebGLRenderer();
     this.camera = new PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
     this.scene = new Scene();
+    this.setScale(universe);
     this.camera.position.x = 20;
     this.camera.position.y = 20;
     this.scene.add(this.camera);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
+    this.loadStars();
+  }
+  setScale(universe) {
+    let lastObject = universe.objects[universe.objects.length-1];
+    let furthestOrbitMeters = Util.auToMeters(lastObject.orbit.keplerianElements.initial.semiMajorAxisAu);
+    this.scaleFactor = ORBIT_MAX_UNITS / furthestOrbitMeters;
   }
   loadStars() {
     var loader = new TextureLoader();
@@ -49,7 +55,7 @@ export class Screen {
         material = new MeshBasicMaterial({
           map: texture
         });
-        geometry = new SphereGeometry(1000, 32, 32);
+        geometry = new SphereGeometry(ORBIT_MAX_UNITS, 32, 32);
         mesh = new Mesh(geometry, material);
         mesh.material.side = BackSide;
         this.scene.add(mesh);
@@ -62,25 +68,25 @@ export class Screen {
 
   scaleRealToVisualised(position) {
     let newPositionScaled = new Vector3(
-      position.x * ORBIT_SCALE_FACTOR,
-      position.y * ORBIT_SCALE_FACTOR,
-      position.z * ORBIT_SCALE_FACTOR
+      position.x * this.scaleFactor,
+      position.y * this.scaleFactor,
+      position.z * this.scaleFactor
     );
     return newPositionScaled;
   }
 
   redrawObject(object) {
-    let newPositionScaled = this.scaleRealToVisualised(object.currentPosition);
+    let newPositionScaled = this.scaleRealToVisualised(object.position);
     object.mesh.position.copy(newPositionScaled);
   }
 
   drawObject(object) {
     var mesh;
-    mesh = Screen.getMeshForObject(object);
+    mesh = this.getMeshForObject(object);
     this.scene.add(mesh);
     return mesh;
   }
-  static getMeshForObject(object) {
+  getMeshForObject(object) {
     var geometry, material, mesh;
     geometry = new SphereGeometry(
       2,
@@ -102,30 +108,31 @@ export class Screen {
 
   drawLightForObject(object) {
     var light;
-    light = Screen.getLightForObject(object);
+    light = this.getLightForObject(object);
     light.position.copy(object.mesh.position);
     this.scene.add(light);
     return light;
   }
-  static getLightForObject(object) {
+  getLightForObject(object) {
     var light = new PointLight(object.color, 1, 0);
     return light;
   }
 
   drawOrbitForObject(object) {
     var mesh;
-    mesh = Screen.getOrbitMeshForObject(object);
+    mesh = this.getOrbitMeshForObject(object);
     mesh.position.set(0, 0, 0);
-    mesh.rotation.set(Math.PI/2, 0, 0);
+    // mesh.rotation.set(Math.PI/2, 0, 0);
     this.scene.add(mesh);
     return mesh;
   }
-  static getOrbitMeshForObject(object) {
+  getOrbitMeshForObject(object) {
     var geometry, material, mesh;
-    let radius = (object.orbit.radius * ORBIT_SCALE_FACTOR);
+
+    let radius = (Util.auToMeters(object.orbit.keplerianElements.initial.semiMajorAxisAu) * this.scaleFactor);
     geometry = new RingGeometry(
-      radius + 0.1,
-      radius - 0.1,
+      radius + 0.01,
+      radius - 0.01,
       360
     );
     material = new MeshBasicMaterial({

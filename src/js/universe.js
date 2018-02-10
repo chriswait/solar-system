@@ -19,11 +19,12 @@ export class Universe {
   updatePositions() {
     let currentCenturiesPastJ2000 = this.clock.getCurrentCenturiesPastJ2000();
     this.objects.forEach((object) => {
-      let newPositionCalc = object.getPositionAtCenturiesPastJ2000(currentCenturiesPastJ2000);
-      if (object.name === 'earth') {
-        console.log(newPositionCalc);
+      if (object.orbit) {
+        let newPosition = object.getPositionAtCenturiesPastJ2000(currentCenturiesPastJ2000);
+        object.setPosition(newPosition);
+      } else {
+        object.setPosition(this.origin);
       }
-      object.setCurrentPosition(newPositionCalc);
     });
   }
 }

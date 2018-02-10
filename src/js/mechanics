@@ -1,0 +1,63 @@
+
+  getArgumentOfPerihelion(periapsisLongitudeDegrees, ascendingNodeLongitudeDegrees) {
+    let argumentOfPerihelion = periapsisLongitudeDegrees - ascendingNodeLongitudeDegrees;
+    return argumentOfPerihelion;
+  }
+  getMeanAnomaly(meanLongitudeDegrees, periapsisLongitudeDegrees) {
+    let meanAnomaly = meanLongitudeDegrees - periapsisLongitudeDegrees;
+    let meanAnomalyMod = (meanAnomaly % 360);
+    if (meanAnomalyMod < 0) {
+      meanAnomalyMod += 360;
+    }
+    return meanAnomalyMod;
+  }
+  EccAnom(eccentricityRadians,meanAnomalyMod) {
+    // eccentricityRadians=eccentricity, meanAnomalyMod=mean anomaly,
+    // dp=number of decimal places
+    var dp = 6;
+    var pi=Math.PI, K=pi/180.0;
+    var maxIter=30, i=0;
+    var delta=Math.pow(10,-dp);
+    var E, F;
+    meanAnomalyMod=meanAnomalyMod/360.0;
+    meanAnomalyMod=2.0*pi*(meanAnomalyMod-Math.floor(meanAnomalyMod));
+    if (eccentricityRadians<0.8) E=meanAnomalyMod; else E=pi;
+    F = E - eccentricityRadians*Math.sin(meanAnomalyMod) - meanAnomalyMod;
+    while ((Math.abs(F)>delta) && (i<maxIter)) {
+      E = E - F/(1.0-eccentricityRadians*Math.cos(E));
+      F = E - eccentricityRadians*Math.sin(E) - meanAnomalyMod;
+      i = i + 1;
+    }
+    E=E/K;
+    return Math.round(E*Math.pow(10,dp))/Math.pow(10,dp);
+  }
+  getEccentricAnomaly(eccentricityRadians, meanAnomalyMod) {
+    // obtains eccentric anomaly from the solution of Kepler's equation:
+    // i.e find E such that M = E - e* sin(E)
+    let eccentricAnomaly;
+    let eccentricityDegrees, eIter, deltaE, deltaM, toleranceDegrees, maxIterations, currentIteration;
+
+    maxIterations = 1000;
+    currentIteration = 0;
+    toleranceDegrees = Math.pow(10, -6);
+
+    eccentricityDegrees = (eccentricityRadians * (180 / Math.PI));
+    eIter = [];
+    deltaE = Infinity;
+
+    // Solving kepler's equation
+    // Start with E0 = M + e* sin(M)
+    eIter[0] = meanAnomalyMod + eccentricityDegrees * Math.sin(meanAnomalyMod);
+
+    // Iterate until |delta E| <= tolerance:
+    //  delta M = M - (En - e* sin(En)
+    //  delta E = delta M / (1 - e sin(En)
+    while (Math.abs(deltaE) > toleranceDegrees && currentIteration < maxIterations) {
+      deltaM = meanAnomalyMod - (eIter[currentIteration] - eccentricityDegrees * Math.sin(eIter[currentIteration]));
+      deltaE = deltaM / (1 - eccentricityRadians * Math.cos(eIter[currentIteration]));
+      eIter[currentIteration+1] = eIter[currentIteration] + deltaE;
+      currentIteration += 1;
+    }
+    eccentricAnomaly = eIter[currentIteration];
+    return eccentricAnomaly;
+  }
