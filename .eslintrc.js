@@ -3,12 +3,10 @@ module.exports = {
     "browser": true,
     "commonjs": true,
     "es6": true,
+    "jasmine": true,
   },
   extends: "eslint:recommended",
   parser: 'babel-eslint',
-  // plugins: [
-  //   'babel'
-  // ],
   parserOptions: {
     sourceType: 'module'
   },
