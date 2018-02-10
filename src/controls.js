@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * @author qiao / https://github.com/qiao
  * @author mrdoob / http://mrdoob.com
@@ -67,7 +69,7 @@ export default class OrbitControls extends EventDispatcher {
     this.enableDamping = false;
     this.dampingFactor = 0.25;
 
-    // This option actually enables dollying in and out; left as "zoom" for backwards compatibility.
+    // This option actually enables dollying in and out left as "zoom" for backwards compatibility.
     // Set to false to disable zooming
     this.enableZoom = true;
     this.zoomSpeed = 1.0;
@@ -251,7 +253,7 @@ export default class OrbitControls extends EventDispatcher {
 
       window.removeEventListener('keydown', onKeyDown, false);
 
-      //scope.dispatchEvent( { type: 'dispose' } ); // should this be added here?
+      //scope.dispatchEvent( { type: 'dispose' } ) // should this be added here?
 
     };
 
@@ -359,7 +361,7 @@ export default class OrbitControls extends EventDispatcher {
 
     }();
 
-    // deltaX and deltaY are in pixels; right and down are positive
+    // deltaX and deltaY are in pixels right and down are positive
     var pan = function() {
 
       var offset = new Vector3();
@@ -448,7 +450,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleMouseDownRotate(event) {
 
-      //console.log( 'handleMouseDownRotate' );
+      //console.log( 'handleMouseDownRotate' )
 
       rotateStart.set(event.clientX, event.clientY);
 
@@ -456,7 +458,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleMouseDownDolly(event) {
 
-      //console.log( 'handleMouseDownDolly' );
+      //console.log( 'handleMouseDownDolly' )
 
       dollyStart.set(event.clientX, event.clientY);
 
@@ -464,7 +466,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleMouseDownPan(event) {
 
-      //console.log( 'handleMouseDownPan' );
+      //console.log( 'handleMouseDownPan' )
 
       panStart.set(event.clientX, event.clientY);
 
@@ -472,7 +474,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleMouseMoveRotate(event) {
 
-      //console.log( 'handleMouseMoveRotate' );
+      //console.log( 'handleMouseMoveRotate' )
 
       rotateEnd.set(event.clientX, event.clientY);
       rotateDelta.subVectors(rotateEnd, rotateStart);
@@ -493,7 +495,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleMouseMoveDolly(event) {
 
-      //console.log( 'handleMouseMoveDolly' );
+      //console.log( 'handleMouseMoveDolly' )
 
       dollyEnd.set(event.clientX, event.clientY);
 
@@ -517,7 +519,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleMouseMovePan(event) {
 
-      //console.log( 'handleMouseMovePan' );
+      //console.log( 'handleMouseMovePan' )
 
       panEnd.set(event.clientX, event.clientY);
 
@@ -532,12 +534,12 @@ export default class OrbitControls extends EventDispatcher {
     }
 
     function handleMouseUp(event) {
-      // console.log( 'handleMouseUp' );
+      // console.log( 'handleMouseUp' )
     }
 
     function handleMouseWheel(event) {
 
-      // console.log( 'handleMouseWheel' );
+      // console.log( 'handleMouseWheel' )
 
       if (event.deltaY < 0) {
 
@@ -555,7 +557,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleKeyDown(event) {
 
-      //console.log( 'handleKeyDown' );
+      //console.log( 'handleKeyDown' )
 
       switch (event.keyCode) {
 
@@ -585,7 +587,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleTouchStartRotate(event) {
 
-      //console.log( 'handleTouchStartRotate' );
+      //console.log( 'handleTouchStartRotate' )
 
       rotateStart.set(event.touches[0].pageX, event.touches[0].pageY);
 
@@ -593,7 +595,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleTouchStartDolly(event) {
 
-      //console.log( 'handleTouchStartDolly' );
+      //console.log( 'handleTouchStartDolly' )
 
       var dx = event.touches[0].pageX - event.touches[1].pageX;
       var dy = event.touches[0].pageY - event.touches[1].pageY;
@@ -606,7 +608,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleTouchStartPan(event) {
 
-      //console.log( 'handleTouchStartPan' );
+      //console.log( 'handleTouchStartPan' )
 
       panStart.set(event.touches[0].pageX, event.touches[0].pageY);
 
@@ -614,7 +616,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleTouchMoveRotate(event) {
 
-      //console.log( 'handleTouchMoveRotate' );
+      //console.log( 'handleTouchMoveRotate' )
 
       rotateEnd.set(event.touches[0].pageX, event.touches[0].pageY);
       rotateDelta.subVectors(rotateEnd, rotateStart);
@@ -635,7 +637,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleTouchMoveDolly(event) {
 
-      //console.log( 'handleTouchMoveDolly' );
+      //console.log( 'handleTouchMoveDolly' )
 
       var dx = event.touches[0].pageX - event.touches[1].pageX;
       var dy = event.touches[0].pageY - event.touches[1].pageY;
@@ -664,7 +666,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleTouchMovePan(event) {
 
-      //console.log( 'handleTouchMovePan' );
+      //console.log( 'handleTouchMovePan' )
 
       panEnd.set(event.touches[0].pageX, event.touches[0].pageY);
 
@@ -680,7 +682,7 @@ export default class OrbitControls extends EventDispatcher {
 
     function handleTouchEnd(event) {
 
-      //console.log( 'handleTouchEnd' );
+      //console.log( 'handleTouchEnd' )
 
     }
 

@@ -1,41 +1,32 @@
 {
-  "name": "3d",
+  "name": "solar-system",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
+  "repository": "https://github.com/chriswait/solar-system.git",
+  "author": "chriswait <chriswait91@gmail.com>",
+  "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack-dev-server"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "babel-core": "^6.22.1",
-    "babel-eslint": "^7.1.1",
-    "babel-loader": "^6.2.10",
-    "babel-polyfill": "^6.22.0",
-    "babel-preset-env": "^1.1.8",
-    "babel-preset-es2015": "^6.22.0",
-    "babel-preset-stage-0": "^6.22.0",
-    "browser-sync": "^2.18.7",
-    "chai": "^3.5.0",
-    "chai-datetime": "^1.4.1",
-    "eslint-config-defaults": "^9.0.0",
-    "eslint-plugin-mocha": "^4.8.0",
-    "gulp": "^3.9.1",
-    "gulp-concat": "^2.6.1",
-    "gulp-eslint": "^3.0.1",
-    "gulp-mocha": "^3.0.1",
-    "gulp-plumber": "^1.1.0",
-    "gulp-sass": "^3.1.0",
-    "gulp-sourcemaps": "^2.4.0",
-    "mocha": "^3.2.0",
-    "orbit-controls-es6": "^1.0.8",
-    "three": "^0.84.0",
-    "webpack": "^2.2.1",
-    "webpack-stream": "^3.2.0"
+    "eslint-plugin-babel": "^4.1.2",
+    "three": "^0.89.0"
   },
   "devDependencies": {
-    "eslint": "^3.19.0",
-    "eslint-config-google": "^0.9.1"
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "css-loader": "^0.28.9",
+    "eslint": "^4.17.0",
+    "eslint-loader": "^1.9.0",
+    "file-loader": "^1.1.6",
+    "html-webpack-plugin": "^2.30.1",
+    "style-loader": "^0.20.1",
+    "webpack": "^3.10.0",
+    "webpack-cli": "^2.0.4",
+    "webpack-dev-server": "^2.11.1"
   }
 }

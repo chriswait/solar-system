@@ -1,4 +1,5 @@
 import {App} from './app';
+import './styles/index.css';
 
 if (window.WebGLRenderingContext) {
   let app = new App();
