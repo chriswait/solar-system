@@ -9,7 +9,7 @@ export class Clock {
     this.rateSeconds = rateSeconds
   }
   tick() {
-    this.date.setTime(this.date.getTime() + this.rateSeconds)
+    this.date.setTime(this.date.getTime() + (this.rateSeconds * 1000))
   }
   getCurrentJulianDate() {
     let year, month, day, hour, min, sec, julianDate
@@ -27,7 +27,6 @@ export class Clock {
     sec = this.date.getUTCSeconds()
     let e = (hour / 24) + (min / 1440) + (sec / 86400)
     julianDate += e
-
     return julianDate
   }
   getCurrentCenturiesPastJ2000() {

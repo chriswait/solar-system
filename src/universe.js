@@ -11,7 +11,11 @@ export class Universe {
     this.origin = new Vector3(0, 0, 0)
     this.objects = []
     for (let solarSystemObject of solarSystemObjects) {
-      this.objects.push(new UniverseObject(solarSystemObject))
+      // console.log(solarSystemObject)
+      // if (solarSystemObject.name === 'sun' || solarSystemObject.name === 'venus' || solarSystemObject.name === 'earth') {
+      // if (solarSystemObject.name === 'sun' || solarSystemObject.name === 'mars') {
+        this.objects.push(new UniverseObject(solarSystemObject))
+      // }
     }
     this.clock = clock
   }

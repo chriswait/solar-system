@@ -11,14 +11,14 @@ import {
   Vector3
 } from 'three'
 
-import {Util} from './util'
+import {auToMeters} from './util'
 import StarField from './images/starfield.png'
 
 const WIDTH = window.innerWidth
 const HEIGHT = window.innerHeight
 const ASPECT = WIDTH / HEIGHT
 const NEAR =  0.1
-const FAR = 2000
+const FAR = 3000
 const VIEW_ANGLE = 90
 
 const SPHERE_SEGMENTS = 16
@@ -32,21 +32,21 @@ export class Screen {
   scene
   controls
   constructor(universe) {
-    this.renderer = new WebGLRenderer()
+    this.renderer = new WebGLRenderer({antialias: true})
     this.camera = new PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR)
     this.scene = new Scene()
     this.setScale(universe)
-    this.camera.position.x = 20
-    this.camera.position.y = 20
+    this.camera.position.set(0, 20, -20)
     this.scene.add(this.camera)
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
+    this.renderer.setSize(WIDTH, HEIGHT)
     document.body.appendChild(this.renderer.domElement)
     this.loadStars()
   }
   setScale(universe) {
     let lastObject = universe.objects[universe.objects.length-1]
-    let furthestOrbitMeters = Util.auToMeters(lastObject.orbit.keplerianElements.initial.semiMajorAxisAu)
+    let furthestOrbitMeters = auToMeters(lastObject.orbit.keplerianElements.initial.semiMajorAxisAu)
     this.scaleFactor = ORBIT_MAX_UNITS / furthestOrbitMeters
+    this.scaleFactor = 8.465335286599654e-11;
   }
   loadStars() {
     var loader = new TextureLoader()
@@ -109,20 +109,17 @@ export class Screen {
   }
 
   drawLightForObject(object) {
-    var light
-    light = this.getLightForObject(object)
+    var light = this.getLightForObject(object)
     light.position.copy(object.mesh.position)
     this.scene.add(light)
     return light
   }
   getLightForObject(object) {
-    var light = new PointLight(object.color, 1, 0)
-    return light
+    return new PointLight(object.color, 1, 0)
   }
 
   drawOrbitForObject(object) {
-    var mesh
-    mesh = this.getOrbitMeshForObject(object)
+    var mesh = this.getOrbitMeshForObject(object)
     mesh.position.set(0, 0, 0)
     // mesh.rotation.set(Math.PI/2, 0, 0)
     this.scene.add(mesh)
@@ -131,7 +128,7 @@ export class Screen {
   getOrbitMeshForObject(object) {
     var geometry, material, mesh
 
-    let radius = (Util.auToMeters(object.orbit.keplerianElements.initial.semiMajorAxisAu) * this.scaleFactor)
+    let radius = (auToMeters(object.orbit.keplerianElements.initial.semiMajorAxisAu) * this.scaleFactor)
     geometry = new RingGeometry(
       radius + 0.01,
       radius - 0.01,
