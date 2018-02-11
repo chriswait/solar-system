@@ -16,72 +16,65 @@ expect.extend({
   }
 })
 
-let now
 let rateSeconds = 1
 let clock
 describe('clock', function() {
+  beforeEach(function() {
+    clock = new Clock()
+  })
   it('should return the current date', function() {
-    now = new Date()
-    clock = new Clock(now, rateSeconds)
-    expect(clock.date.getTime()).toEqual(now.getTime())
+    expect(clock.date.getTime()).toBeNearMilliseconds((new Date()).getTime())
   })
   describe('should tick correctly', function() {
     it('10000', function() {
-      clock = new Clock(new Date(), 10000)
+      clock.rateSeconds = 10000
       clock.tick()
       expect(clock.date.getTime()).toBeNearMilliseconds((new Date()).getTime() + 10000 * 1000)
     })
     it('1000000', function() {
-      clock = new Clock(new Date(), 1000000)
+      clock.rateSeconds = 1000000
       clock.tick()
       expect(clock.date.getTime()).toBeNearMilliseconds((new Date()).getTime() + 1000000 * 1000)
     })
     it('1000000000', function() {
-      clock = new Clock(new Date(), 1000000000)
+      clock.rateSeconds = 1000000000
       clock.tick()
       expect(clock.date.getTime()).toBeNearMilliseconds((new Date()).getTime() + 1000000000 * 1000)
     })
   })
   describe('should return the correct julian date', function() {
+    beforeEach(function() {
+      clock = new Clock()
+    })
     it('2001-01-01', function() {
-      var testDate = new Date('2001-01-01 00:00')
-      var testJulianDate = 2451910.5
-      clock = new Clock(testDate, rateSeconds)
-      expect(clock.getCurrentJulianDate()).toBeCloseTo(testJulianDate, 0)
+      clock.date = new Date('2001-01-01 00:00')
+      expect(clock.currentJulianDate).toBeCloseTo(2451910.5, 0)
     })
     it('2010-09-09', function() {
-      var testDate = new Date('2010-09-09 00:00')
-      var testJulianDate = 2455448.5
-      clock = new Clock(testDate, rateSeconds)
-      expect(clock.getCurrentJulianDate()).toBeCloseTo(testJulianDate, 0)
+      clock.date = new Date('2010-09-09 00:00')
+      expect(clock.currentJulianDate).toBeCloseTo(2455448.5, 0)
     })
     it('2017-06-02', function() {
-      var testDate = new Date('2017-06-02 00:00')
-      var testJulianDate = 2457906.5
-      clock = new Clock(testDate, rateSeconds)
-      expect(clock.getCurrentJulianDate()).toBeCloseTo(testJulianDate, 0)
+      clock.date = new Date('2017-06-02 00:00')
+      expect(clock.currentJulianDate).toBeCloseTo(2457906.5, 0)
     })
     it('2100-01-01', function() {
-      var testDate = new Date('2100-01-01 00:00')
-      var testJulianDate = 2488069.5
-      clock = new Clock(testDate, rateSeconds)
-      expect(clock.getCurrentJulianDate()).toBeCloseTo(testJulianDate, 0)
+      clock.date = new Date('2100-01-01 00:00')
+      expect(clock.currentJulianDate).toBeCloseTo(2488069.5, 0)
     })
   })
 
-
   describe('should return correct centuries past J2000', function() {
+    beforeEach(function() {
+      clock = new Clock()
+    })
     it('2000-01-01', function() {
-      var testDate = new Date('2000-01-01 00:00')
-      clock = new Clock(testDate, rateSeconds)
-      let centuries = clock.getCurrentCenturiesPastJ2000()
-      expect(centuries).toBeCloseTo(0, 1)
+      clock.date = new Date('2000-01-01 00:00')
+      expect(clock.currentCenturiesPastJ2000).toBeCloseTo(0, 1)
     })
     it('2100-01-01', function() {
-      var testDate = new Date('2100-01-01 00:00')
-      clock = new Clock(testDate, rateSeconds)
-      let centuries = clock.getCurrentCenturiesPastJ2000()
-      expect(centuries).toBeCloseTo(1, 1)
+      clock.date = new Date('2100-01-01 00:00')
+      expect(clock.currentCenturiesPastJ2000).toBeCloseTo(1, 1)
     })
   })
 })

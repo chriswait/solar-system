@@ -1,7 +1,7 @@
 <template>
   <div id='container'>
     <canvas id='solar-system-canvas'></canvas>
-    <control-panel></control-panel>
+    <control-panel :clock='clock'></control-panel>
   </div>
 </template>
 
@@ -11,12 +11,8 @@ import OrbitControls from './orbit-controls'
 import {Screen} from './screen'
 import {Universe} from './universe'
 import {Clock} from './clock'
-import ControlPanel from './control-panel'
-
-const FRAME_RATE = 50
-// const CLOCK_RATE_SECONDS = (60 * 60 * 24 * 365) / FRAME_RATE
-const CLOCK_RATE_SECONDS = (60 * 24 * 365) / FRAME_RATE
-// const CLOCK_RATE_SECONDS = 1 / FRAME_RATE
+import ControlPanel from './ControlPanel'
+import {FRAME_RATE} from './constants'
 
 export default {
   name: 'App',
@@ -24,7 +20,7 @@ export default {
     ControlPanel
   },
   created: function() {
-    this.clock = new Clock(new Date(), CLOCK_RATE_SECONDS)
+    this.clock = new Clock()
     this.universe = new Universe(SolarSystemData.objects, this.clock)
     this.screen = new Screen()
     let lastObject = this.universe.objects[this.universe.objects.length-1]
@@ -48,7 +44,7 @@ export default {
   methods: {
     render() {
       this.clock.tick()
-      this.universe.updatePositions(this.clock.getCurrentCenturiesPastJ2000())
+      this.universe.updatePositions(this.clock.currentCenturiesPastJ2000)
       this.universe.objects.forEach((object) => {
         this.screen.redrawObject(object)
       })

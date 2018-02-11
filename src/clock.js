@@ -1,17 +1,16 @@
-const J2000 = 2451545.0
-const DAYS_PER_JULIAN_CENTURY = 36525
+import {J2000, DAYS_PER_JULIAN_CENTURY, INITIAL_CLOCK_RATE_SECONDS} from './constants'
 
 export class Clock {
   date
   rateSeconds
-  constructor(initialDate, rateSeconds) {
-    this.date = initialDate
-    this.rateSeconds = rateSeconds
+  constructor() {
+    this.date = new Date()
+    this.rateSeconds = INITIAL_CLOCK_RATE_SECONDS
   }
   tick() {
     this.date.setTime(this.date.getTime() + (this.rateSeconds * 1000))
   }
-  getCurrentJulianDate() {
+  get currentJulianDate() {
     let year, month, day, hour, min, sec, julianDate
     year = this.date.getUTCFullYear()
     month = this.date.getUTCMonth() + 1
@@ -29,7 +28,7 @@ export class Clock {
     julianDate += e
     return julianDate
   }
-  getCurrentCenturiesPastJ2000() {
-    return (this.getCurrentJulianDate() - J2000) / DAYS_PER_JULIAN_CENTURY
+  get currentCenturiesPastJ2000() {
+    return (this.currentJulianDate - J2000) / DAYS_PER_JULIAN_CENTURY
   }
 }

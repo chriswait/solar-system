@@ -2,12 +2,21 @@
   <div id='control-panel'>
     <h1>Controls</h1>
     <h2>Focus</h2>
+    <span>date {{currentTime}}</span>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ControlPanel'
+  name: 'ControlPanel',
+  props: [
+    'clock'
+  ],
+  computed: {
+    currentTime: function() {
+      return this.clock.currentJulianDate
+    },
+  }
 }
 </script>
 

@@ -1,6 +1,4 @@
-const AU_TO_METERS = 149597870700
-const DEG_TO_RADIANS = 0.0174533
-const CIRCLE_RADIANS = (Math.PI * 2)
+import {AU_TO_METERS, DEG_TO_RADIANS, CIRCLE_RADIANS} from './constants'
 
 export function auToMeters(au) {
   return au * AU_TO_METERS
