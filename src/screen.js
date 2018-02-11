@@ -41,9 +41,11 @@ export class Screen {
   }
 
   initRenderer() {
-    this.renderer = new WebGLRenderer({antialias: true})
-    this.renderer.setSize(WIDTH, HEIGHT)
-    document.body.appendChild(this.renderer.domElement)
+    this.renderer = new WebGLRenderer({
+      canvas: document.getElementById('solar-system-canvas'),
+      antialias: true
+    })
+    this.renderer.setSize(WIDTH - 300, HEIGHT)
   }
 
   render() {

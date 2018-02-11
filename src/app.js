@@ -1,5 +1,5 @@
 import SolarSystemData from './data/solar-system'
-import OrbitControls from './controls'
+import OrbitControls from './orbit-controls'
 import {Screen} from './screen'
 import {Universe} from './universe'
 import {Clock} from './clock'
