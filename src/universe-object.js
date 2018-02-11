@@ -7,7 +7,6 @@ export class UniverseObject {
   color
   orbit
   star
-
   mesh
   position
   constructor(object) {
@@ -21,6 +20,7 @@ export class UniverseObject {
     }
     this.star = object.star
   }
+
   setPosition(newPosition) {
     if (typeof(this.position) === 'undefined') {
       this.position = newPosition

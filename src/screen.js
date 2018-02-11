@@ -35,7 +35,7 @@ export class Screen {
   constructor() {
     this.camera = new PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR)
     this.scene = new Scene()
-    this.camera.position.set(0, 20, -20)
+    this.camera.position.set(0, 0, 50)
     this.scene.add(this.camera)
     this.loadStars()
   }
@@ -116,6 +116,7 @@ export class Screen {
   getOrbitMeshForObject(object) {
     let radius = (auToMeters(object.orbit.keplerianElements.initial.semiMajorAxisAu) * this.scaleFactor)
     let geometry = new RingGeometry(radius + 0.01, radius - 0.01, 360)
+    geometry.rotateX(Math.PI)
     let material = new MeshBasicMaterial({color: object.color})
     return new Mesh(geometry, material)
   }

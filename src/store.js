@@ -6,10 +6,9 @@ const store = new Vuex.Store({
   strict: true,
   state: {
     clock: null,
-    objects: []
-  },
-  actions: {
-
+    objects: [],
+    target: null,
+    position: null,
   },
   mutations: {
     setClock: (state, clock) => {
@@ -17,7 +16,13 @@ const store = new Vuex.Store({
     },
     tickClock: (state) => {
       state.clock.tick()
-    }
+    },
+    setTarget: (state, target) => {
+      state.target = Object.assign({}, target)
+    },
+    setPosition: (state, position) => {
+      state.position = Object.assign({}, position)
+    },
   },
   getters: {
     clockDate: (state) => {
@@ -28,7 +33,13 @@ const store = new Vuex.Store({
     },
     clockCenturiesPastJ2000: (state) => {
       return state.clock.currentCenturiesPastJ2000
-    }
+    },
+    target: (state) => {
+      return state.target
+    },
+    position: (state) => {
+      return state.position
+    },
   }
 })
 

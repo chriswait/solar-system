@@ -47,9 +47,14 @@ export default {
 
       this.universe.objects.forEach((object) => {
         this.screen.redrawObject(object)
+        if (object.name === 'earth') {
+          this.controls.target.copy(this.screen.scaleRealToVisualised(object.position))
+        }
       })
       this.controls.update()
       this.screen.render()
+      if (this.controls) this.$store.commit('setTarget', this.controls.target)
+      if (this.screen.camera) this.$store.commit('setPosition', this.screen.camera.position)
 
       setTimeout(() => {
         requestAnimationFrame(this.render.bind(this))

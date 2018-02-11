@@ -8,9 +8,7 @@ export class Universe {
   objects = []
   constructor() {
     SolarSystemData.objects.forEach((solarSystemObject) => {
-      if (solarSystemObject.name === 'sun'|| solarSystemObject.name === 'earth') {
-        this.objects.push(new UniverseObject(solarSystemObject))
-      }
+      this.objects.push(new UniverseObject(solarSystemObject))
     })
   }
   updatePositions() {
