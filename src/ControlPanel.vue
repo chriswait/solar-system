@@ -9,12 +9,9 @@
 <script>
 export default {
   name: 'ControlPanel',
-  props: [
-    'clock'
-  ],
   computed: {
     currentTime: function() {
-      return this.clock.currentJulianDate
+      return this.$store.getters.clockDate
     },
   }
 }

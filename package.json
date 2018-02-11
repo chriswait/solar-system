@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "three": "^0.89.0",
-    "vue": "^2.5.13"
+    "vue": "^2.5.13",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

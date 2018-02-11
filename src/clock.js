@@ -8,7 +8,7 @@ export class Clock {
     this.rateSeconds = INITIAL_CLOCK_RATE_SECONDS
   }
   tick() {
-    this.date.setTime(this.date.getTime() + (this.rateSeconds * 1000))
+    this.date = new Date(this.date.getTime() + (this.rateSeconds * 1000))
   }
   get currentJulianDate() {
     let year, month, day, hour, min, sec, julianDate

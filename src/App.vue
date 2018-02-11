@@ -1,12 +1,11 @@
 <template>
   <div id='container'>
     <canvas id='solar-system-canvas'></canvas>
-    <control-panel :clock='clock'></control-panel>
+    <control-panel></control-panel>
   </div>
 </template>
 
 <script>
-import SolarSystemData from './data/solar-system'
 import OrbitControls from './orbit-controls'
 import {Screen} from './screen'
 import {Universe} from './universe'
@@ -20,8 +19,8 @@ export default {
     ControlPanel
   },
   created: function() {
-    this.clock = new Clock()
-    this.universe = new Universe(SolarSystemData.objects, this.clock)
+    this.$store.commit('setClock', new Clock())
+    this.universe = new Universe()
     this.screen = new Screen()
     let lastObject = this.universe.objects[this.universe.objects.length-1]
     this.screen.setScaleForOuterObject(lastObject)
@@ -43,13 +42,15 @@ export default {
   },
   methods: {
     render() {
-      this.clock.tick()
-      this.universe.updatePositions(this.clock.currentCenturiesPastJ2000)
+      this.$store.commit('tickClock')
+      this.universe.updatePositions()
+
       this.universe.objects.forEach((object) => {
         this.screen.redrawObject(object)
       })
       this.controls.update()
       this.screen.render()
+
       setTimeout(() => {
         requestAnimationFrame(this.render.bind(this))
       }, FRAME_RATE)
