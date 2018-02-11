@@ -8,8 +8,22 @@ const config = {
   entry: {
     app: './src/index.js'
   },
+  resolve: {
+    extensions: ['.js', '.vue', '.json'],
+    alias: {
+      vue: 'vue/dist/vue.common.js'
+    }
+  },
   module: {
     rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          loaders: {},
+          cssSourceMap: true
+        }
+      },
       {
         enforce: 'pre',
         test: /\.js$/,
@@ -24,10 +38,6 @@ const config = {
           presets: ['env'],
           plugins: ["transform-class-properties"]
         }
-      },
-      {
-        test: /\.css$/,
-        use: [ 'style-loader', 'css-loader' ]
       },
       {
         test: /\.(png|svg|jpg|gif)$/,

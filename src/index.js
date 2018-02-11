@@ -1,9 +1,14 @@
-import {App} from './app'
-import './styles/index.css'
+import Vue from 'vue'
+import App from './App'
 
 if (window.WebGLRenderingContext) {
-  let app = new App()
-  app.init()
+  new Vue({
+    el: '#app',
+    components: {
+      App,
+    },
+    template: '<App/>'
+  })
 } else {
   window.location = 'http://get.webgl.org/'
 }
