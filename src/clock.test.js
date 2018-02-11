@@ -1,5 +1,4 @@
 import {Clock} from './clock'
-
 expect.extend({
   toBeNearMilliseconds(received, argument) {
     let diff = received - argument;

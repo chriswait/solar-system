@@ -14,7 +14,6 @@ export class App {
   controls
   clock
   universe
-  lastClockTime
   constructor() {
     this.clock = new Clock(new Date(), CLOCK_RATE_SECONDS)
     this.universe = new Universe(SolarSystemData.objects, this.clock)
@@ -22,6 +21,7 @@ export class App {
     this.controls = new OrbitControls(this.screen.camera)
     this.controls.target.set(0, 0, 0)
   }
+
   init() {
     this.universe.objects.forEach((object) => {
       object.mesh = this.screen.drawObject(object)
@@ -32,20 +32,15 @@ export class App {
         object.orbit.mesh = this.screen.drawOrbitForObject(object)
       }
     })
-
     requestAnimationFrame(this.render.bind(this))
   }
 
   render() {
     this.clock.tick()
-    let currentTime = this.clock.getCurrentCenturiesPastJ2000()
-    if (currentTime != this.lastClockTime) {
-      this.universe.updatePositions()
-      this.universe.objects.forEach((object) => {
-        this.screen.redrawObject(object)
-      })
-      this.lastClockTime = currentTime
-    }
+    this.universe.updatePositions(this.clock.getCurrentCenturiesPastJ2000())
+    this.universe.objects.forEach((object) => {
+      this.screen.redrawObject(object)
+    })
     this.controls.update()
     this.screen.render()
     setTimeout(() => {
