@@ -53,16 +53,13 @@ export class Screen {
   }
 
   loadStars() {
-    var loader = new TextureLoader()
+    let loader = new TextureLoader()
     loader.load(
       StarField,
       (texture) => {
-        let material, geometry, mesh
-        material = new MeshBasicMaterial({
-          map: texture
-        })
-        geometry = new SphereGeometry(ORBIT_MAX_UNITS, 32, 32)
-        mesh = new Mesh(geometry, material)
+        let material = new MeshBasicMaterial({map: texture})
+        let geometry = new SphereGeometry(ORBIT_MAX_UNITS, 32, 32)
+        let mesh = new Mesh(geometry, material)
         mesh.material.side = BackSide
         this.scene.add(mesh)
       }
@@ -72,7 +69,6 @@ export class Screen {
   setScaleForOuterObject(lastObject) {
     let furthestOrbitMeters = auToMeters(lastObject.orbit.keplerianElements.initial.semiMajorAxisAu)
     this.scaleFactor = ORBIT_MAX_UNITS / furthestOrbitMeters
-    // this.scaleFactor = 8.465335286599654e-11;
   }
 
   scaleRealToVisualised(position) {
@@ -89,33 +85,18 @@ export class Screen {
   }
 
   drawObject(object) {
-    var mesh
-    mesh = this.getMeshForObject(object)
+    let mesh = this.getMeshForObject(object)
     this.scene.add(mesh)
     return mesh
   }
   getMeshForObject(object) {
-    var geometry, material, mesh
-    geometry = new SphereGeometry(
-      2,
-      SPHERE_SEGMENTS,
-      SPHERE_RINGS
-    )
-    if (object.star) {
-      material = new MeshDepthMaterial()
-    } else {
-      material = new MeshLambertMaterial(
-        {
-          color: object.color
-        }
-      )
-    }
-    mesh = new Mesh(geometry, material)
-    return mesh
+    let geometry = new SphereGeometry(2, SPHERE_SEGMENTS, SPHERE_RINGS)
+    let material = object.star ? new MeshDepthMaterial() : material = new MeshLambertMaterial({color: object.color})
+    return new Mesh(geometry, material)
   }
 
   drawLightForObject(object) {
-    var light = this.getLightForObject(object)
+    let light = this.getLightForObject(object)
     light.position.copy(object.mesh.position)
     this.scene.add(light)
     return light
@@ -125,25 +106,15 @@ export class Screen {
   }
 
   drawOrbitForObject(object) {
-    var mesh = this.getOrbitMeshForObject(object)
+    let mesh = this.getOrbitMeshForObject(object)
     mesh.position.set(0, 0, 0)
-    // mesh.rotation.set(Math.PI/2, 0, 0)
     this.scene.add(mesh)
     return mesh
   }
   getOrbitMeshForObject(object) {
-    var geometry, material, mesh
-
     let radius = (auToMeters(object.orbit.keplerianElements.initial.semiMajorAxisAu) * this.scaleFactor)
-    geometry = new RingGeometry(
-      radius + 0.01,
-      radius - 0.01,
-      360
-    )
-    material = new MeshBasicMaterial({
-      color: object.color
-    })
-    mesh = new Mesh(geometry, material)
-    return mesh
+    let geometry = new RingGeometry(radius + 0.01, radius - 0.01, 360)
+    let material = new MeshBasicMaterial({color: object.color})
+    return new Mesh(geometry, material)
   }
 }

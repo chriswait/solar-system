@@ -15,8 +15,9 @@ export class UniverseObject {
     this.radius = object.radius
     this.color = object.color
     if (object.orbit) {
-      this.orbit = {}
-      this.orbit.keplerianElements = object.orbit.keplerianElements
+      this.orbit = {
+        keplerianElements: object.orbit.keplerianElements
+      }
     }
     this.star = object.star
   }

@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "webpack-dev-server",
-    "test": "jest --watch --no-cache"
+    "test": "jest --watch"
   },
   "dependencies": {
     "three": "^0.89.0"
@@ -34,6 +34,8 @@
   },
   "jest": {
     "collectCoverage": true,
+    "notify": true,
+    "notifyMode": "failure",
     "moduleFileExtensions": ["js"],
     "moduleDirectories": ["node_modules"],
     "moduleNameMapper": {
