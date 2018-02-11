@@ -24,30 +24,34 @@ const VIEW_ANGLE = 90
 const SPHERE_SEGMENTS = 16
 const SPHERE_RINGS = 16
 
-const ORBIT_MAX_UNITS = 500
+export const ORBIT_MAX_UNITS = 500
 
 export class Screen {
   renderer
   camera
   scene
   controls
-  constructor(universe) {
-    this.renderer = new WebGLRenderer({antialias: true})
+  scaleFactor = 1
+  constructor() {
     this.camera = new PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR)
     this.scene = new Scene()
-    this.setScale(universe)
     this.camera.position.set(0, 20, -20)
     this.scene.add(this.camera)
-    this.renderer.setSize(WIDTH, HEIGHT)
-    document.body.appendChild(this.renderer.domElement)
     this.loadStars()
   }
-  setScale(universe) {
-    let lastObject = universe.objects[universe.objects.length-1]
-    let furthestOrbitMeters = auToMeters(lastObject.orbit.keplerianElements.initial.semiMajorAxisAu)
-    this.scaleFactor = ORBIT_MAX_UNITS / furthestOrbitMeters
-    this.scaleFactor = 8.465335286599654e-11;
+
+  initRenderer() {
+    this.renderer = new WebGLRenderer({antialias: true})
+    this.renderer.setSize(WIDTH, HEIGHT)
+    document.body.appendChild(this.renderer.domElement)
   }
+
+  render() {
+    if (this.renderer) {
+      this.renderer.render(this.scene, this.camera)
+    }
+  }
+
   loadStars() {
     var loader = new TextureLoader()
     loader.load(
@@ -64,17 +68,19 @@ export class Screen {
       }
     )
   }
-  render() {
-    this.renderer.render(this.scene, this.camera)
+
+  setScaleForOuterObject(lastObject) {
+    let furthestOrbitMeters = auToMeters(lastObject.orbit.keplerianElements.initial.semiMajorAxisAu)
+    this.scaleFactor = ORBIT_MAX_UNITS / furthestOrbitMeters
+    // this.scaleFactor = 8.465335286599654e-11;
   }
 
   scaleRealToVisualised(position) {
-    let newPositionScaled = new Vector3(
+    return new Vector3(
       position.x * this.scaleFactor,
       position.y * this.scaleFactor,
       position.z * this.scaleFactor
     )
-    return newPositionScaled
   }
 
   redrawObject(object) {

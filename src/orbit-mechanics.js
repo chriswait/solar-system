@@ -54,7 +54,6 @@ export class OrbitMechanics {
 
     // Compute the eccentric anomaly
     elements.eccentricAnomalyRadians = OrbitMechanics.getEccentricAnomaly(elements.eccentricityRadians, elements.meanAnomalyRadians)
-    // elements.eccentricAnomalyRadians = UniverseObject.solveEccentricAnomaly(elements.eccentricityRadians, elements.meanAnomalyRadians)
 
     // Mod angles to 2 PI radians
     elements.eccentricAnomalyRadians = modRadiansToCircle(elements.eccentricAnomalyRadians)

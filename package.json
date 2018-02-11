@@ -33,6 +33,7 @@
     "webpack-dev-server": "^2.11.1"
   },
   "jest": {
+    "collectCoverage": true,
     "moduleFileExtensions": ["js"],
     "moduleDirectories": ["node_modules"],
     "moduleNameMapper": {

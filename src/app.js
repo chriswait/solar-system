@@ -17,7 +17,12 @@ export class App {
   constructor() {
     this.clock = new Clock(new Date(), CLOCK_RATE_SECONDS)
     this.universe = new Universe(SolarSystemData.objects, this.clock)
-    this.screen = new Screen(this.universe)
+
+    this.screen = new Screen()
+    let lastObject = this.universe.objects[this.universe.objects.length-1]
+    this.screen.setScaleForOuterObject(lastObject);
+    this.screen.initRenderer()
+
     this.controls = new OrbitControls(this.screen.camera)
     this.controls.target.set(0, 0, 0)
   }
