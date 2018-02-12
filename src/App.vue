@@ -9,7 +9,6 @@
 import OrbitControls from './orbit-controls'
 import {Screen} from './screen'
 import {Universe} from './universe'
-import {Clock} from './clock'
 import ControlPanel from './ControlPanel'
 import {FRAME_RATE} from './constants'
 
@@ -18,38 +17,44 @@ export default {
   components: {
     ControlPanel
   },
+  computed: {
+    objects: function() {
+      return this.$store.getters.objects
+    },
+    lastObject: function() {
+      return this.objects[this.objects.length - 1]
+    }
+  },
   created: function() {
-    this.$store.commit('setClock', new Clock())
     this.universe = new Universe()
-    this.screen = new Screen()
-    let lastObject = this.universe.objects[this.universe.objects.length-1]
-    this.screen.setScaleForOuterObject(lastObject)
   },
   mounted() {
+    this.screen = new Screen()
     this.screen.initRenderer()
+    this.screen.setScaleForOuterObject(this.lastObject)
     this.controls = new OrbitControls(this.screen.camera)
     this.controls.target.set(0, 0, 0)
-    this.universe.objects.forEach((object) => {
-      object.mesh = this.screen.drawObject(object)
+    this.objects.forEach((object) => {
+      this.screen.drawObject(object)
       if (object.star) {
-        object.star.mesh = this.screen.drawLightForObject(object)
+        this.screen.drawLightForObject(object)
       }
       if (object.orbit) {
-        object.orbit.mesh = this.screen.drawOrbitForObject(object)
+        this.screen.drawOrbitForObject(object)
       }
     })
     requestAnimationFrame(this.render.bind(this))
   },
   methods: {
     render() {
-      this.$store.commit('tickClock')
+      this.$store.commit('tick')
       this.universe.updatePositions()
 
-      this.universe.objects.forEach((object) => {
+      this.objects.forEach((object) => {
         this.screen.redrawObject(object)
-        if (object.name === 'earth') {
-          this.controls.target.copy(this.screen.scaleRealToVisualised(object.position))
-        }
+        // if (object.name === 'earth') {
+        //   this.controls.target.copy(this.screen.scaleRealToVisualised(object.position))
+        // }
       })
       this.controls.update()
       this.screen.render()

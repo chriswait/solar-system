@@ -32,6 +32,7 @@ export class Screen {
   scene
   controls
   scaleFactor = 1
+  meshes = {}
   constructor() {
     this.camera = new PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR)
     this.scene = new Scene()
@@ -83,41 +84,32 @@ export class Screen {
 
   redrawObject(object) {
     let newPositionScaled = this.scaleRealToVisualised(object.position)
-    object.mesh.position.copy(newPositionScaled)
+    this.meshes[object.name].position.copy(newPositionScaled)
   }
 
   drawObject(object) {
-    let mesh = this.getMeshForObject(object)
-    this.scene.add(mesh)
-    return mesh
-  }
-  getMeshForObject(object) {
     let geometry = new SphereGeometry(2, SPHERE_SEGMENTS, SPHERE_RINGS)
     let material = object.star ? new MeshDepthMaterial() : material = new MeshLambertMaterial({color: object.color})
-    return new Mesh(geometry, material)
+    let mesh = new Mesh(geometry, material)
+    this.scene.add(mesh)
+    this.meshes[object.name] = mesh
   }
 
   drawLightForObject(object) {
-    let light = this.getLightForObject(object)
-    light.position.copy(object.mesh.position)
+    let light = new PointLight(object.color, 1, 0)
+    light.position.copy(this.meshes[object.name].position)
     this.scene.add(light)
     return light
   }
-  getLightForObject(object) {
-    return new PointLight(object.color, 1, 0)
-  }
 
   drawOrbitForObject(object) {
-    let mesh = this.getOrbitMeshForObject(object)
-    mesh.position.set(0, 0, 0)
-    this.scene.add(mesh)
-    return mesh
-  }
-  getOrbitMeshForObject(object) {
     let radius = (auToMeters(object.orbit.keplerianElements.initial.semiMajorAxisAu) * this.scaleFactor)
     let geometry = new RingGeometry(radius + 0.01, radius - 0.01, 360)
     geometry.rotateX(Math.PI)
     let material = new MeshBasicMaterial({color: object.color})
-    return new Mesh(geometry, material)
+    let mesh = new Mesh(geometry, material)
+    mesh.position.set(0, 0, 0)
+    this.scene.add(mesh)
+    return mesh
   }
 }

@@ -3,45 +3,68 @@
     <h1>Controls</h1>
     <div class='panel'>
       <h2>Date</h2>
-      <div>date {{currentTime}}</div>
-      <div>julian {{currentJulian | round(2)}}</div>
-      <div>centuries past J2000 {{currentCenturiesPastJ2000 | round(5)}}</div>
+      <div>date {{date}}</div>
+      <div>julian {{julianDate | round(2)}}</div>
+      <div>centuries past J2000 {{centuriesPastJ2000 | round(5)}}</div>
     </div>
     <div class='panel'>
       <h2>Camera</h2>
-      <div>position</div>
-      <div>x: {{currentPosition.x | round(5)}}</div>
-      <div>y: {{currentPosition.y | round(5)}}</div>
-      <div>z: {{currentPosition.z | round(5)}}</div>
-      <div>target</div>
-      <div>x: {{currentTarget.x | round(5)}}</div>
-      <div>y: {{currentTarget.y | round(5)}}</div>
-      <div>z: {{currentTarget.z | round(5)}}</div>
+      <div v-if='position'>
+        <h3>position</h3>
+        <div>x: {{position.x | round(5)}}</div>
+        <div>y: {{position.y | round(5)}}</div>
+        <div>z: {{position.z | round(5)}}</div>
+      </div>
+      <div v-if='target'>
+        <h3>target</h3>
+        <div>x: {{target.x | round(5)}}</div>
+        <div>y: {{target.y | round(5)}}</div>
+        <div>z: {{target.z | round(5)}}</div>
+      </div>
+    </div>
+    <div class='panel'>
+      <h2>Objects</h2>
+      <div v-for='object of objects' :key='object.name'>
+        <span>{{object.name}}</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-
-
 export default {
   name: 'ControlPanel',
+  filters: {
+    round: (value, decimals) => {
+      if(!value) {
+        value = 0;
+      }
+      if(!decimals) {
+        decimals = 0;
+      }
+      value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+      return value;
+    }
+  },
   computed: {
-    currentTime: function() {
-      return this.$store.getters.clockDate
+    date: function() {
+      return this.$store.getters.currentDate
     },
-    currentJulian: function() {
-      return this.$store.getters.clockJulian
+    julianDate: function() {
+      return this.$store.getters.julianDate
+    } ,
+    centuriesPastJ2000: function() {
+      return this.$store.getters.centuriesPastJ2000
     },
-    currentCenturiesPastJ2000: function() {
-      return this.$store.getters.clockCenturiesPastJ2000
-    },
-    currentTarget: function() {
+    target: function() {
       return this.$store.getters.target
     },
-    currentPosition: function() {
+    position: function() {
       return this.$store.getters.position
-    }
+    },
+    objects: function() {
+      return this.$store.getters.objects
+    },
   }
 }
 </script>

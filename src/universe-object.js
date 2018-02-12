@@ -21,14 +21,6 @@ export class UniverseObject {
     this.star = object.star
   }
 
-  setPosition(newPosition) {
-    if (typeof(this.position) === 'undefined') {
-      this.position = newPosition
-    } else {
-      this.position.copy(newPosition)
-    }
-  }
-
   getPositionAtCenturiesPastJ2000(currentCenturiesPastJ2000) {
     let elements = OrbitMechanics.getElementsAtCenturiesPastJ2000(this.orbit.keplerianElements, currentCenturiesPastJ2000)
     let euler1 = new Euler(0, 0, elements.ascendingNodeLongitudeRadians, 'XYZ')
