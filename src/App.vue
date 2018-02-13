@@ -23,6 +23,9 @@ export default {
     },
     lastObject: function() {
       return this.objects[this.objects.length - 1]
+    },
+    currentTargetPosition: function() {
+      return this.$store.getters.currentTargetPosition
     }
   },
   created: function() {
@@ -54,10 +57,10 @@ export default {
 
       this.objects.forEach((object) => {
         this.screen.redrawObject(object)
-        // if (object.name === 'earth') {
-        //   this.controls.target.copy(this.screen.scaleRealToVisualised(object.position))
-        // }
       })
+      if (this.currentTargetPosition) {
+        this.controls.target.copy(this.screen.scaleRealToVisualised(this.currentTargetPosition))
+      }
       this.controls.update()
       this.screen.render()
       if (this.screen.camera) this.$store.commit('setCameraPosition', this.screen.camera.position)

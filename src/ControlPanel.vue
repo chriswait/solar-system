@@ -30,7 +30,7 @@
       <div class='panel'>
         <h2>Objects</h2>
         <div v-for='object of objects' :key='object.name'>
-          <span>{{object.name}}</span>
+          <span v-on:click='selectTargetObjectName(object.name)'>{{object.name}}</span>
         </div>
       </div>
     </div>
@@ -77,6 +77,11 @@ export default {
     objects: function() {
       return this.$store.getters.objects
     },
+  },
+  methods: {
+    selectTargetObjectName(objectName) {
+      this.$store.commit('setTargetName', objectName)
+    }
   }
 }
 </script>
