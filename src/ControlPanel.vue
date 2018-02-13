@@ -11,17 +11,20 @@
       </div>
       <div class='panel'>
         <h2>Camera</h2>
-        <div v-if='position'>
-          <h3>position</h3>
-          <div>x: {{position.x | round(5)}}</div>
-          <div>y: {{position.y | round(5)}}</div>
-          <div>z: {{position.z | round(5)}}</div>
+        <div v-if='cameraPosition'>
+          <h3>cameraPosition</h3>
+          <div>x: {{cameraPosition.x | round(5)}}</div>
+          <div>y: {{cameraPosition.y | round(5)}}</div>
+          <div>z: {{cameraPosition.z | round(5)}}</div>
         </div>
-        <div v-if='target'>
+        <div v-if='targetName'>
           <h3>target</h3>
-          <div>x: {{target.x | round(5)}}</div>
-          <div>y: {{target.y | round(5)}}</div>
-          <div>z: {{target.z | round(5)}}</div>
+          <div>{{targetName}}</div>
+          <div v-if='targetPosition'>
+            <div>x: {{targetPosition.x | round(5)}}</div>
+            <div>y: {{targetPosition.y | round(5)}}</div>
+            <div>z: {{targetPosition.z | round(5)}}</div>
+          </div>
         </div>
       </div>
       <div class='panel'>
@@ -62,11 +65,14 @@ export default {
     clockRateSeconds: function() {
       return this.$store.getters.clockRateSeconds
     },
-    target: function() {
-      return this.$store.getters.target
+    targetName: function() {
+      return this.$store.getters.currentTargetName
     },
-    position: function() {
-      return this.$store.getters.position
+    targetPosition: function() {
+      return this.$store.getters.currentTargetPosition
+    },
+    cameraPosition: function() {
+      return this.$store.getters.currentCameraPosition
     },
     objects: function() {
       return this.$store.getters.objects

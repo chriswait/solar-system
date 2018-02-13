@@ -60,8 +60,7 @@ export default {
       })
       this.controls.update()
       this.screen.render()
-      if (this.controls) this.$store.commit('setTarget', this.controls.target)
-      if (this.screen.camera) this.$store.commit('setPosition', this.screen.camera.position)
+      if (this.screen.camera) this.$store.commit('setCameraPosition', this.screen.camera.position)
 
       setTimeout(() => {
         requestAnimationFrame(this.render.bind(this))

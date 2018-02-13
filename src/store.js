@@ -10,18 +10,18 @@ const store = new Vuex.Store({
     clockRateSeconds: 1000,
     clock: null,
     universeObjects: [],
-    target: null,
-    position: null,
+    targetName: 'sun',
+    cameraPosition: null,
   },
   mutations: {
     tick: (state) => {
       Vue.set(state, 'date', Clock.getDateAfterNextTick(state.date, state.clockRateSeconds))
     },
-    setTarget: (state, target) => {
-      state.target = Object.assign({}, target)
+    setTargetName: (state, targetName) => {
+      state.targetName = targetName
     },
-    setPosition: (state, position) => {
-      state.position = Object.assign({}, position)
+    setCameraPosition: (state, position) => {
+      state.cameraPosition = Object.assign({}, position)
     },
     setObjects: (state, objects) => {
       state.universeObjects = objects
@@ -36,8 +36,17 @@ const store = new Vuex.Store({
     julianDate: (state) => Clock.getJulianDate(state.date),
     centuriesPastJ2000: (state) => Clock.getCenturiesPastJ2000(state.date),
     clockRateSeconds: (state) => state.clockRateSeconds,
-    target: (state) => state.target,
-    position: (state) => state.position,
+    currentTargetName: (state) => state.targetName,
+    currentTargetObject: (state) => {
+      return state.universeObjects.find((ob) => ob.name === state.targetName)
+    },
+    currentTargetPosition: (state) => {
+      let currentTargetObject = state.universeObjects.find((ob) => ob.name === state.targetName)
+      if (currentTargetObject) {
+        return Object.assign({}, currentTargetObject.position)
+      }
+    },
+    currentCameraPosition: (state) => state.cameraPosition,
     objects: (state) => state.universeObjects
    }
 })
