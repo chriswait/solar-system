@@ -7,7 +7,8 @@
         <div>date {{date}}</div>
         <div>julian {{julianDate | round(2)}}</div>
         <div>centuries past J2000 {{centuriesPastJ2000 | round(5)}}</div>
-        <div>rate {{clockRateSeconds}}</div>
+        <div>Clock Speed (s): {{clockRateSeconds}}</div>
+        <input v-model='clockRateSeconds' />
       </div>
       <div class='panel'>
         <h2>Camera</h2>
@@ -62,9 +63,15 @@ export default {
     centuriesPastJ2000: function() {
       return this.$store.getters.centuriesPastJ2000
     },
-    clockRateSeconds: function() {
-      return this.$store.getters.clockRateSeconds
+    clockRateSeconds: {
+      get () {
+        return this.$store.getters.clockRateSeconds
+      },
+      set (value) {
+        return this.$store.commit('setClockRateSeconds', value)
+      }
     },
+
     targetName: function() {
       return this.$store.getters.currentTargetName
     },

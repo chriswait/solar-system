@@ -1,4 +1,5 @@
 import {Clock} from './clock'
+import {INITIAL_CLOCK_RATE_SECONDS} from './constants'
 import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
@@ -7,7 +8,7 @@ const store = new Vuex.Store({
   strict: true,
   state: {
     date: new Date,
-    clockRateSeconds: 1000,
+    clockRateSeconds: INITIAL_CLOCK_RATE_SECONDS,
     clock: null,
     universeObjects: [],
     targetName: 'sun',
@@ -16,6 +17,9 @@ const store = new Vuex.Store({
   mutations: {
     tick: (state) => {
       Vue.set(state, 'date', Clock.getDateAfterNextTick(state.date, state.clockRateSeconds))
+    },
+    setClockRateSeconds: (state, clockRateSeconds) => {
+      state.clockRateSeconds = clockRateSeconds
     },
     setTargetName: (state, targetName) => {
       state.targetName = targetName
