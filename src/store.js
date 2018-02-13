@@ -35,6 +35,7 @@ const store = new Vuex.Store({
     currentDate: (state) => state.date,
     julianDate: (state) => Clock.getJulianDate(state.date),
     centuriesPastJ2000: (state) => Clock.getCenturiesPastJ2000(state.date),
+    clockRateSeconds: (state) => state.clockRateSeconds,
     target: (state) => state.target,
     position: (state) => state.position,
     objects: (state) => state.universeObjects

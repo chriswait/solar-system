@@ -29,10 +29,12 @@ export default {
     this.universe = new Universe()
   },
   mounted() {
+    let canvasElement = document.getElementById('solar-system-canvas')
     this.screen = new Screen()
-    this.screen.initRenderer()
+    this.screen.initRenderer(canvasElement)
     this.screen.setScaleForOuterObject(this.lastObject)
-    this.controls = new OrbitControls(this.screen.camera)
+
+    this.controls = new OrbitControls(this.screen.camera, canvasElement)
     this.controls.target.set(0, 0, 0)
     this.objects.forEach((object) => {
       this.screen.drawObject(object)
@@ -72,7 +74,7 @@ export default {
 <style>
 html, body {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   overflow: hidden;
   margin: 0;
 }
