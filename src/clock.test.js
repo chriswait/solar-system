@@ -17,7 +17,7 @@ expect.extend({
   }
 })
 
-describe('can compute date of next tick', function() {
+describe('should compute date of next tick', function() {
   it('with rate of 0 seconds', function() {
     let date = new Date()
     expect(Clock.getDateAfterNextTick(date, 0).getTime()).toBe(date.getTime())
@@ -31,6 +31,7 @@ describe('can compute date of next tick', function() {
     expect(Clock.getDateAfterNextTick(date, 1000).getTime()).toBe(date.getTime() + (1000 * 1000))
   })
 })
+
 describe('should return the correct julian date', function() {
   it('2001-01-01', function() {
     let date = new Date('2001-01-01 00:00')

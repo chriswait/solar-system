@@ -2,27 +2,35 @@ import {Vector3} from 'three'
 import {UniverseObject} from './universe-object'
 import SolarSystemData from './data/solar-system.json'
 
-let earthDictionary, universeObject
-describe('universe-object', function() {
-  beforeEach(function() {
-    earthDictionary = SolarSystemData.objects[3]
-    universeObject = new UniverseObject(earthDictionary)
-  })
-  it('can load earth correctly', function() {
+let sunDictionary = SolarSystemData.objects[0]
+let earthDictionary = SolarSystemData.objects[3]
+
+describe('should load objects correctly', function() {
+  it('earth', function() {
+    let universeObject = new UniverseObject(earthDictionary)
     expect(universeObject.name).toBe('earth')
+    expect(universeObject.orbit).toBeDefined()
+    expect(universeObject.star).toBeFalsy()
   })
-  it('can set position', function() {
-    let newPosition = new Vector3(1, 1, 1)
-    expect(universeObject.position).toBeUndefined()
-    universeObject.setPosition(newPosition)
-    expect(universeObject.position).toEqual(newPosition)
+  it('sun', function() {
+    let universeObject = new UniverseObject(sunDictionary)
+    expect(universeObject.name).toBe('sun')
+    expect(universeObject.orbit).toBeUndefined()
+    expect(universeObject.star).toBeTruthy()
   })
-  it('can update position', function() {
-    let firstPosition = new Vector3(1, 1, 1)
-    let secondPosition = new Vector3(2, 2, 2)
-    universeObject.setPosition(firstPosition)
-    expect(universeObject.position).toEqual(firstPosition)
-    universeObject.setPosition(secondPosition)
-    expect(universeObject.position).toEqual(secondPosition)
+})
+describe('should return position at centuries', function() {
+  it('earth at J2000', function() {
+    let universeObject = new UniverseObject(earthDictionary)
+    let position = universeObject.getPositionAtCenturiesPastJ2000(0)
+    expect(typeof(position)).toEqual('object')
+    expect(typeof(position.x)).toEqual('number')
+  })
+  it('sun', function() {
+    let universeObject = new UniverseObject(sunDictionary)
+    let position = universeObject.getPositionAtCenturiesPastJ2000(0)
+    expect(typeof(position)).toEqual('object')
+    expect(typeof(position.x)).toEqual('number')
+    expect(position.x).toEqual(0)
   })
 })

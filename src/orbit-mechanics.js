@@ -1,4 +1,4 @@
-import {Vector3} from 'three'
+import {Vector3, Euler, Quaternion} from 'three'
 import {auToMeters, degreesToRadians, modRadiansToCircle} from './util'
 
 export class OrbitMechanics {
@@ -64,11 +64,19 @@ export class OrbitMechanics {
     elements.inclinationRadians = modRadiansToCircle(elements.inclinationRadians)
     elements.periapsisArgumentRadians = modRadiansToCircle(elements.periapsisArgumentRadians)
 
-    // Find position
-    elements.position = new Vector3(
+    return elements
+  }
+  static getPositionForElements(elements) {
+    let position = new Vector3(
       elements.semiMajorAxisMeters * (Math.cos(elements.eccentricAnomalyRadians) - elements.eccentricityRadians),
       elements.semiMajorAxisMeters * (Math.sqrt(1 - Math.pow(elements.eccentricityRadians, 2))) * Math.sin(elements.eccentricAnomalyRadians)
     )
-    return elements
+    let euler1 = new Euler(0, 0, elements.ascendingNodeLongitudeRadians, 'XYZ')
+    let quaterion1 = new Quaternion().setFromEuler(euler1)
+    let euler2 = new Euler(elements.inclinationRadians, 0, elements.periapsisArgumentRadians, 'XYZ')
+    let quaterion2 = new Quaternion().setFromEuler(euler2)
+    let planeQuat = new Quaternion().multiplyQuaternions(quaterion1, quaterion2)
+    position.applyQuaternion(planeQuat)
+    return position
   }
 }
