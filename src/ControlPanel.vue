@@ -7,8 +7,7 @@
         <div>date {{date}}</div>
         <div>julian {{julianDate | round(2)}}</div>
         <div>centuries past J2000 {{centuriesPastJ2000 | round(5)}}</div>
-        <div>Clock Speed (s): {{clockRateSeconds}}</div>
-        <input v-model='clockRateSeconds' />
+        <div>Clock Speed: <input v-model='clockRateSeconds'/></div>
       </div>
       <div class='panel'>
         <h2>Camera</h2>
@@ -31,7 +30,7 @@
       <div class='panel'>
         <h2>Objects</h2>
         <div v-for='object of objects' :key='object.name'>
-          <span v-on:click='selectTargetObjectName(object.name)'>{{object.name}}</span>
+          <span v-bind:class='{selected: object.name === targetName}' v-on:click='selectTargetObjectName(object.name)'>{{object.name}}</span>
         </div>
       </div>
     </div>
@@ -103,5 +102,8 @@ export default {
   }
   #control-panel-content {
     padding: 10px;
+  }
+  .selected {
+    color: red;
   }
 </style>

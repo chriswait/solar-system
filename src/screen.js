@@ -16,6 +16,7 @@ import {
 
 import {auToMeters} from './util'
 import StarField from './images/starfield.png'
+import store from './store'
 
 const NEAR =  0.1
 const FAR = 3000
@@ -53,6 +54,11 @@ export class Screen {
     )
   }
 
+  onClick(event) {
+    event.preventDefault()
+    store.commit('setTargetName', this.hoverObject.userData.name)
+  }
+
   onResize() {
     this.width = this.canvasElement.clientWidth
     this.height = window.innerHeight
@@ -79,6 +85,7 @@ export class Screen {
     this.scene.add(this.camera)
 
     document.addEventListener('mousemove', this.onMouseMove.bind(this), false)
+    document.addEventListener('click', this.onClick.bind(this), false)
     window.addEventListener('resize', this.onResize.bind(this), false)
 
     this.loadStars()
