@@ -55,8 +55,10 @@ export class Screen {
   }
 
   onClick(event) {
-    event.preventDefault()
-    store.commit('setTargetName', this.hoverObject.userData.name)
+    if (this.hoverObject) {
+      event.preventDefault()
+      store.commit('setTargetName', this.hoverObject.userData.name)
+    }
   }
 
   onResize() {

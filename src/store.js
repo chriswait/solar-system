@@ -1,7 +1,10 @@
-import {Clock} from './clock'
-import {INITIAL_CLOCK_RATE_SECONDS} from './constants'
 import Vue from 'vue'
 import Vuex from 'vuex'
+
+import {Clock} from './clock'
+import {INITIAL_CLOCK_RATE_SECONDS} from './constants'
+import {UniverseObject} from './universe-object'
+
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
@@ -13,27 +16,6 @@ const store = new Vuex.Store({
     universeObjects: [],
     targetName: 'sun',
     cameraPosition: null,
-  },
-  mutations: {
-    tick: (state) => {
-      Vue.set(state, 'date', Clock.getDateAfterNextTick(state.date, state.clockRateSeconds))
-    },
-    setClockRateSeconds: (state, clockRateSeconds) => {
-      state.clockRateSeconds = clockRateSeconds
-    },
-    setTargetName: (state, targetName) => {
-      state.targetName = targetName
-    },
-    setCameraPosition: (state, position) => {
-      state.cameraPosition = Object.assign({}, position)
-    },
-    setObjects: (state, objects) => {
-      state.universeObjects = objects
-    },
-    setPositionForObject: (state, {position, object}) => {
-      let match = state.universeObjects.find((ob) => ob.name === object.name)
-      Vue.set(match, 'position', position)
-    }
   },
   getters: {
     currentDate: (state) => state.date,
@@ -51,8 +33,49 @@ const store = new Vuex.Store({
       }
     },
     currentCameraPosition: (state) => state.cameraPosition,
-    objects: (state) => state.universeObjects
-   }
+    objects: (state) => state.universeObjects,
+    objectWithName: (state) => {
+      return name => {
+        return state.universeObjects.find((ob) => ob.name === name)
+      }
+    }
+  },
+  mutations: {
+    tick: (state) => {
+      Vue.set(state, 'date', Clock.getDateAfterNextTick(state.date, state.clockRateSeconds))
+    },
+    setClockRateSeconds: (state, clockRateSeconds) => {
+      state.clockRateSeconds = clockRateSeconds
+    },
+    setTargetName: (state, targetName) => {
+      state.targetName = targetName
+    },
+    setCameraPosition: (state, position) => {
+      state.cameraPosition = Object.assign({}, position)
+    },
+    setObjects: (state, objects) => {
+      state.universeObjects = objects
+    },
+    setPositionForObject: (state, {object, position}) => {
+      let match = state.universeObjects.find((ob) => ob.name === object.name)
+      Vue.set(match, 'position', position)
+    }
+  },
+  actions: {
+    loadUniverseObjects: (context, solarSystemData) => {
+      let objects = solarSystemData.objects.map((solarSystemObject) => new UniverseObject(solarSystemObject))
+      context.commit('setObjects', objects)
+    },
+    updatePositions: (context) => {
+      let centuries = context.getters.centuriesPastJ2000
+      context.getters.objects.forEach((object) => {
+        context.commit('setPositionForObject', {
+          object: object,
+          position: object.getPositionAtCenturiesPastJ2000(centuries)
+        })
+      })
+    }
+  }
 })
 
 export default store
