@@ -3,13 +3,13 @@
     {
       "name": "sun",
       "radius": 695700,
-      "color": "yellow",
+      "color": "#fffc9d",
       "star": {}
     },
     {
       "name": "mercury",
       "radius": 2440,
-      "color": 8553090,
+      "color": "#c09071",
       "orbit": {
         "keplerianElements": {
           "initial": {
@@ -34,7 +34,7 @@
     {
       "name": "venus",
       "radius": 6052,
-      "color": 10712126,
+      "color": "#f2c1c5",
       "orbit": {
         "keplerianElements": {
           "initial": {
@@ -59,7 +59,7 @@
     {
       "name": "earth",
       "radius": 6371,
-      "color": 4416570,
+      "color": "#70cbe9",
       "orbit": {
         "keplerianElements": {
           "initial": {
@@ -84,7 +84,7 @@
     {
       "name": "mars",
       "radius": 3390,
-      "color": 14829346,
+      "color": "#d54734",
       "orbit": {
         "keplerianElements": {
           "initial": {
@@ -109,7 +109,7 @@
     {
       "name": "jupiter",
       "radius": 69911,
-      "color": 16448499,
+      "color": "#fef0a9",
       "orbit": {
         "keplerianElements": {
           "initial": {
@@ -134,7 +134,7 @@
     {
       "name": "saturn",
       "radius": 58232,
-      "color": 14070138,
+      "color": "#dc9e7c",
       "orbit": {
         "keplerianElements": {
           "initial": {
@@ -159,7 +159,7 @@
     {
       "name": "uranus",
       "radius": 25362,
-      "color": 4505583,
+      "color": "#6db0f5",
       "orbit": {
         "keplerianElements": {
           "initial": {
@@ -184,7 +184,7 @@
     {
       "name": "neptune",
       "radius": 24622,
-      "color": 4682495,
+      "color": "#3059af",
       "orbit": {
         "keplerianElements": {
           "initial": {
@@ -209,7 +209,7 @@
     {
       "name": "pluto",
       "radius": 1187,
-      "color": 15056795,
+      "color": "#dbe8f0",
       "orbit": {
         "keplerianElements": {
           "initial": {
