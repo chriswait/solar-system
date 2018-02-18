@@ -1,19 +1,22 @@
 <template>
   <div id='visualizer-container'>
     <canvas id='solar-system-canvas'></canvas>
-    <div
-      class='overlay-label'
-      v-for='object of objects'
-      :key='object.name'
-      v-if='object.position2D'
-      v-on:click='selectTargetObjectName(object.name)'
-      v-bind:style='{
-        left: object.position2D.x + "px",
-        top: object.position2D.y + "px",
-      }'
-    >
-      {{object.name}}
-    </div>
+    <div id='overlay'>
+      <div
+        class='overlay-object'
+        v-for='object of objects'
+        :key='object.name'
+        v-if='object.position2D'
+        v-on:click='selectTargetObjectName(object.name)'
+        v-bind:style='{
+          left: object.position2D.x + "px",
+          top: object.position2D.y + "px",
+          width: object.position2D.dist + "px",
+          height: object.position2D.dist + "px"
+        }'
+      >
+        {{object.name}}
+      </div>
     </div>
   </div>
 </template>
@@ -94,8 +97,12 @@ export default {
     width: 100%;
     height: 100%;
   }
-  .overlay-label {
+  .overlay-object {
     position: absolute;
     color: white;
+    border-radius: 50%;
+    border: 3px solid skyblue;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
   }
 </style>

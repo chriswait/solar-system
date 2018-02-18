@@ -101,6 +101,7 @@ export default {
     background-color: #12181f;
     color: white;
     overflow-y: scroll;
+    z-index: 1;
   }
   #control-panel-content {
     padding: 10px;

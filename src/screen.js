@@ -1,6 +1,9 @@
 import {
-  SphereGeometry, RingGeometry,
-  MeshBasicMaterial, MeshDepthMaterial, MeshLambertMaterial,
+  SphereGeometry,
+  TorusGeometry,
+  MeshBasicMaterial,
+  MeshDepthMaterial,
+  MeshLambertMaterial,
   Mesh,
   PointLight,
   WebGLRenderer,
@@ -18,7 +21,7 @@ import {auToMeters} from './util'
 import StarField from './images/starfield.png'
 import store from './store'
 
-const NEAR =  0.1
+const NEAR = 0.01
 const FAR = 3000
 const VIEW_ANGLE = 90
 const SPHERE_SEGMENTS = 16
@@ -141,7 +144,8 @@ export class Screen {
     vector.y = -(vector.y * this.height / 2) + this.height / 2
     return {
       x: vector.x,
-      y: vector.y
+      y: vector.y,
+      dist: FAR / 6 / object3d.position.distanceTo(this.camera.position)
     }
   }
 
@@ -159,7 +163,8 @@ export class Screen {
   }
 
   drawObject(object) {
-    let geometry = new SphereGeometry(2, SPHERE_SEGMENTS, SPHERE_RINGS)
+    let radius = object.radius * 1000 * this.scaleFactor * 10
+    let geometry = new SphereGeometry(radius, SPHERE_SEGMENTS, SPHERE_RINGS)
     let material
     if (object.star) {
       material = new MeshDepthMaterial()
@@ -181,7 +186,7 @@ export class Screen {
 
   drawOrbitForObject(object) {
     let radius = auToMeters(object.orbit.keplerianElements.initial.semiMajorAxisAu) * this.scaleFactor
-    let geometry = new RingGeometry(radius + 0.01, radius - 0.01, 360)
+    let geometry = new TorusGeometry(radius, 0.1, 3, 360, Math.PI * 2)
     geometry.rotateX(Math.PI)
     let material = new MeshBasicMaterial({color: object.color})
     let mesh = new Mesh(geometry, material)
