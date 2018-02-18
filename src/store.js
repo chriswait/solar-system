@@ -59,6 +59,10 @@ const store = new Vuex.Store({
     setPositionForObject: (state, {object, position}) => {
       let match = state.universeObjects.find((ob) => ob.name === object.name)
       Vue.set(match, 'position', position)
+    },
+    setPosition2DForObject: (state, {object, position2D}) => {
+      let match = state.universeObjects.find((ob) => ob.name === object.name)
+      Vue.set(match, 'position2D', position2D)
     }
   },
   actions: {

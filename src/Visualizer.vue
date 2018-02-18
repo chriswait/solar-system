@@ -1,5 +1,21 @@
 <template>
-  <canvas id='solar-system-canvas'></canvas>
+  <div id='visualizer-container'>
+    <canvas id='solar-system-canvas'></canvas>
+    <div
+      class='overlay-label'
+      v-for='object of objects'
+      :key='object.name'
+      v-if='object.position2D'
+      v-on:click='selectTargetObjectName(object.name)'
+      v-bind:style='{
+        left: object.position2D.x + "px",
+        top: object.position2D.y + "px",
+      }'
+    >
+      {{object.name}}
+    </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -20,16 +36,16 @@ export default {
     currentTargetPosition: function() {
       return this.$store.getters.currentTargetPosition
     }
-
+  },
+  created() {
+    this.screen = new Screen()
   },
   mounted() {
     let canvasElement = document.getElementById('solar-system-canvas')
-    this.screen = new Screen()
     this.screen.initRenderer(canvasElement)
     this.screen.setScaleForOuterObject(this.lastObject)
-
     this.controls = new OrbitControls(this.screen.camera, canvasElement)
-    this.controls.target.set(0, 0, 0)
+
     this.objects.forEach((object) => {
       this.screen.drawObject(object)
       if (object.star) {
@@ -39,6 +55,7 @@ export default {
         this.screen.drawOrbitForObject(object)
       }
     })
+
     requestAnimationFrame(this.render.bind(this))
   },
   methods: {
@@ -52,6 +69,7 @@ export default {
       if (this.currentTargetPosition) {
         this.controls.target.copy(this.screen.scaleRealToVisualised(this.currentTargetPosition))
       }
+
       this.controls.update()
       this.screen.render()
       if (this.screen.camera) this.$store.commit('setCameraPosition', this.screen.camera.position)
@@ -59,14 +77,25 @@ export default {
       setTimeout(() => {
         requestAnimationFrame(this.render.bind(this))
       }, FRAME_RATE)
+    },
+    selectTargetObjectName(objectName) {
+      this.$store.commit('setTargetName', objectName)
     }
   }
 }
 </script>
 
 <style scoped>
+  #visualizer-container {
+    position: relative;
+  }
+  #visualizer-container,
   #solar-system-canvas {
     width: 100%;
     height: 100%;
+  }
+  .overlay-label {
+    position: absolute;
+    color: white;
   }
 </style>

@@ -30,21 +30,16 @@ export class Screen {
   canvasElement
   renderer
   camera
-  scene
+  scene = new Scene()
   width
   height
   aspect
-  raycaster
+  raycaster = new Raycaster()
   hoverObject
   mousePosition
   controls
   scaleFactor = 1
   meshes = {}
-
-  constructor() {
-    this.scene = new Scene()
-    this.raycaster = new Raycaster()
-  }
 
   onMouseMove(event) {
     event.preventDefault()
@@ -95,6 +90,7 @@ export class Screen {
 
   render() {
     if (this.renderer) {
+
       if (this.mousePosition) {
         this.raycaster.setFromCamera(this.mousePosition, this.camera)
         let intersects = this.raycaster.intersectObjects(this.scene.children).filter((intersect) => intersect.object.userData.name)
@@ -137,6 +133,18 @@ export class Screen {
     this.scaleFactor = ORBIT_MAX_UNITS / furthestOrbitMeters
   }
 
+  get2DCoordinateForObject3D(object3d) {
+    let vector = (new Vector3())
+    .setFromMatrixPosition(object3d.matrixWorld)
+    .project(this.camera)
+    vector.x = (vector.x * this.width / 2) + this.width / 2
+    vector.y = -(vector.y * this.height / 2) + this.height / 2
+    return {
+      x: vector.x,
+      y: vector.y
+    }
+  }
+
   scaleRealToVisualised(position) {
     return new Vector3(position.x, position.y, position.z).multiplyScalar(this.scaleFactor)
   }
@@ -144,6 +152,10 @@ export class Screen {
   redrawObject(object) {
     let newPositionScaled = this.scaleRealToVisualised(object.position)
     this.meshes[object.name].position.copy(newPositionScaled)
+    store.commit('setPosition2DForObject', {
+      object: object,
+      position2D: this.get2DCoordinateForObject3D(this.meshes[object.name])
+    })
   }
 
   drawObject(object) {

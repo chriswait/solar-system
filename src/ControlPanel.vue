@@ -30,7 +30,10 @@
       <div class='panel'>
         <h2>Objects</h2>
         <div v-for='object of objects' :key='object.name'>
-          <span v-bind:class='{selected: object.name === targetName}' v-on:click='selectTargetObjectName(object.name)'>{{object.name}}</span>
+          <span
+            v-bind:class='{selected: object.name === targetName}'
+            v-on:click='selectTargetObjectName(object.name)'
+          >{{object.name}}</span>
         </div>
       </div>
     </div>
@@ -70,7 +73,6 @@ export default {
         return this.$store.commit('setClockRateSeconds', value)
       }
     },
-
     targetName: function() {
       return this.$store.getters.currentTargetName
     },
