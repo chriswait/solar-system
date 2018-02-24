@@ -2,32 +2,27 @@
   <div id='visualizer-container'>
     <canvas id='solar-system-canvas'></canvas>
     <div id='overlay'>
-      <div
-        class='overlay-object'
+      <overlay-object
         v-for='object of objects'
         :key='object.name'
-        v-if='object.position2D'
-        v-on:click='selectTargetObjectName(object.name)'
-        v-bind:style='{
-          left: object.position2D.x + "px",
-          top: object.position2D.y + "px",
-          width: object.position2D.dist + "px",
-          height: object.position2D.dist + "px"
-        }'
-      >
-        {{object.name}}
-      </div>
+        :object='object'
+      ></overlay-object>
     </div>
   </div>
 </template>
 
 <script>
+import OverlayObject from './OverlayObject'
+
 import OrbitControls from './orbit-controls'
 import {Screen} from './screen'
 import {FRAME_RATE} from './constants'
 
 export default {
   name: 'Visualizer',
+  components: {
+    'overlay-object': OverlayObject
+  },
   computed: {
     objects: function() {
       return this.$store.getters.objects
@@ -80,9 +75,6 @@ export default {
       setTimeout(() => {
         requestAnimationFrame(this.render.bind(this))
       }, FRAME_RATE)
-    },
-    selectTargetObjectName(objectName) {
-      this.$store.commit('setTargetName', objectName)
     }
   }
 }
@@ -96,13 +88,5 @@ export default {
   #solar-system-canvas {
     width: 100%;
     height: 100%;
-  }
-  .overlay-object {
-    position: absolute;
-    color: white;
-    border-radius: 50%;
-    border: 3px solid skyblue;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
   }
 </style>

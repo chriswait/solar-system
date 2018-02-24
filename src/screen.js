@@ -17,7 +17,7 @@ import {
   Color
 } from 'three'
 
-import {auToMeters} from './util'
+import {auToMeters, degreesToRadians} from './util'
 import StarField from './images/starfield.png'
 import store from './store'
 
@@ -142,10 +142,19 @@ export class Screen {
     .project(this.camera)
     vector.x = (vector.x * this.width / 2) + this.width / 2
     vector.y = -(vector.y * this.height / 2) + this.height / 2
+
+    // calculate draw size
+    let radius = object3d.geometry.parameters.radius
+    let dist = object3d.position.distanceTo(this.camera.position) - radius
+    let fov = degreesToRadians(this.camera.fov)
+    let height = 2 * Math.tan(fov / 2) * dist
+    let fraction = (radius * 2) / height
+    let visibleHeight = this.height * fraction
     return {
       x: vector.x,
       y: vector.y,
-      dist: FAR / 6 / object3d.position.distanceTo(this.camera.position)
+      side: visibleHeight,
+      dist: dist
     }
   }
 
