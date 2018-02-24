@@ -1,4 +1,3 @@
-import {Vector3} from 'three'
 import {UniverseObject} from './universe-object'
 import SolarSystemData from './data/solar-system.json'
 

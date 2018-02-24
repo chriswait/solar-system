@@ -30,6 +30,7 @@ export class OrbitMechanics {
     eccentricAnomaly = eIter[currentIteration]
     return eccentricAnomaly
   }
+
   static getElementsAtCenturiesPastJ2000(keplerianElements, currentCenturiesPastJ2000) {
     let elements = {
       time: currentCenturiesPastJ2000
@@ -58,6 +59,7 @@ export class OrbitMechanics {
     // Mod angles to 2 PI radians
     elements.eccentricAnomalyRadians = modRadiansToCircle(elements.eccentricAnomalyRadians)
     elements.meanAnomalyRadians = modRadiansToCircle(elements.meanAnomalyRadians)
+
     // for first euler
     elements.ascendingNodeLongitudeRadians = modRadiansToCircle(elements.ascendingNodeLongitudeRadians)
     // for second euler
@@ -66,6 +68,7 @@ export class OrbitMechanics {
 
     return elements
   }
+
   static getPositionForElements(elements) {
     let position = new Vector3(
       elements.semiMajorAxisMeters * (Math.cos(elements.eccentricAnomalyRadians) - elements.eccentricityRadians),

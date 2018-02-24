@@ -1,7 +1,7 @@
 <template>
-  <div id='container'>
-    <visualizer></visualizer>
-    <control-panel></control-panel>
+  <div id="container">
+    <visualizer/>
+    <control-panel/>
   </div>
 </template>
 

@@ -1,12 +1,12 @@
 <template>
-  <div id='visualizer-container'>
-    <canvas id='solar-system-canvas'></canvas>
-    <div id='overlay'>
+  <div id="visualizer-container">
+    <canvas id="solar-system-canvas"/>
+    <div id="overlay">
       <overlay-object
-        v-for='object of objects'
-        :key='object.name'
-        :object='object'
-      ></overlay-object>
+        v-for="object of objects"
+        :key="object.name"
+        :object="object"
+      />
     </div>
   </div>
 </template>

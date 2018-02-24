@@ -8,27 +8,27 @@ describe('can solve eccentric anomaly', function() {
       OrbitMechanics.getEccentricAnomaly(0.5, degreesToRadians(27))
     ).toBeCloseTo(
       degreesToRadians(48.43418)
-    );
+    )
   })
   it ('e=1.0, M=90 deg', function() {
     expect(
       OrbitMechanics.getEccentricAnomaly(1, degreesToRadians(90))
     ).toBeCloseTo(
       degreesToRadians(132.34646)
-    );
+    )
   })
   it ('e=0.1, M=180 deg', function() {
     expect(
       OrbitMechanics.getEccentricAnomaly(0.1, degreesToRadians(180))
     ).toBeCloseTo(
       degreesToRadians(180)
-    );
+    )
   })
 })
 
 describe('can get elements at date', function() {
   it('earth at J2000', function() {
-    let keplerianElements = SolarSystemData.objects[3].orbit.keplerianElements;
+    let keplerianElements = SolarSystemData.objects[3].orbit.keplerianElements
     let newElements = OrbitMechanics.getElementsAtCenturiesPastJ2000(keplerianElements, 0)
 
     // time should be 0
@@ -48,7 +48,7 @@ describe('can get elements at date', function() {
     expect(newElements.periapsisArgumentRadians).toBe(1.7966022440288691)
   })
   it('earth at J2100', function() {
-    let keplerianElements = SolarSystemData.objects[3].orbit.keplerianElements;
+    let keplerianElements = SolarSystemData.objects[3].orbit.keplerianElements
     let newElements = OrbitMechanics.getElementsAtCenturiesPastJ2000(keplerianElements, 1)
 
     // time should be 1

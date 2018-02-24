@@ -1,9 +1,9 @@
 <template>
   <div
-    class='overlay-object'
-    v-if='object.position2D && shouldDisplay'
-    v-on:click='selectTargetObjectName(object.name)'
-    v-bind:style='objectStyle'
+    v-if="object.position2D && shouldDisplay"
+    :style="objectStyle"
+    class="overlay-object"
+    @click="selectTargetObjectName(object.name)"
   >
     {{object.name}}
   </div>
@@ -13,7 +13,10 @@
 export default {
   name: 'OverlayObject',
   props: {
-    object: Object
+    object: {
+      type: Object,
+      default: () => {}
+    }
   },
   computed: {
     shouldDisplay: function() {
@@ -28,15 +31,8 @@ export default {
         width: this.object.position2D.side + "px",
         height: this.object.position2D.side + "px",
         opacity: opacity,
-        // "border-color": `rgba(1, 1, 1, ${100 / this.object.position2D.dist})`
       }
     }
-  },
-  created() {
-    console.log('create object')
-  },
-  mounted() {
-    console.log('mount object')
   },
   methods: {
     selectTargetObjectName(objectName) {

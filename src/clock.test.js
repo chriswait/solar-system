@@ -2,7 +2,7 @@ import {Clock} from './clock'
 
 expect.extend({
   toBeNearMilliseconds(received, argument) {
-    let diff = received - argument;
+    let diff = received - argument
     if (diff < 10) {
       return {
         message: () => `expected ${received} not to be within 10 of ${argument}`,

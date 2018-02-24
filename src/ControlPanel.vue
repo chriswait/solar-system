@@ -1,38 +1,40 @@
 <template>
-  <div id='control-panel'>
-    <div id='control-panel-content'>
+  <div id="control-panel">
+    <div id="control-panel-content">
       <h1>Controls</h1>
-      <div class='panel'>
+      <div class="panel">
         <h2>Clock</h2>
         <div>date {{date}}</div>
         <div>julian {{julianDate | round(2)}}</div>
         <div>centuries past J2000 {{centuriesPastJ2000 | round(5)}}</div>
-        <div>Clock Speed: <input v-model='clockRateSeconds'/></div>
+        <div>Clock Speed: <input v-model="clockRateSeconds"></div>
       </div>
-      <div class='panel'>
+      <div class="panel">
         <h2>Camera</h2>
-        <div v-if='cameraPosition'>
+        <div v-if="cameraPosition">
           <h3>cameraPosition</h3>
           <div>x: {{cameraPosition.x | round(5)}}</div>
           <div>y: {{cameraPosition.y | round(5)}}</div>
           <div>z: {{cameraPosition.z | round(5)}}</div>
         </div>
-        <div v-if='targetName'>
+        <div v-if="targetName">
           <h3>target</h3>
           <div>{{targetName}}</div>
-          <div v-if='targetPosition'>
+          <div v-if="targetPosition">
             <div>x: {{targetPosition.x | round(5)}}</div>
             <div>y: {{targetPosition.y | round(5)}}</div>
             <div>z: {{targetPosition.z | round(5)}}</div>
           </div>
         </div>
       </div>
-      <div class='panel'>
+      <div class="panel">
         <h2>Objects</h2>
-        <div v-for='object of objects' :key='object.name'>
+        <div
+          v-for="object of objects"
+          :key="object.name">
           <span
-            v-bind:class='{selected: object.name === targetName}'
-            v-on:click='selectTargetObjectName(object.name)'
+            :class="{selected: object.name === targetName}"
+            @click="selectTargetObjectName(object.name)"
           >{{object.name}}</span>
         </div>
       </div>
@@ -46,13 +48,13 @@ export default {
   filters: {
     round: (value, decimals) => {
       if(!value) {
-        value = 0;
+        value = 0
       }
       if(!decimals) {
-        decimals = 0;
+        decimals = 0
       }
-      value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
-      return value;
+      value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals)
+      return value
     }
   },
   computed: {

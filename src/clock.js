@@ -4,6 +4,7 @@ export class Clock {
   static getDateAfterNextTick(date, rateSeconds) {
     return new Date(date.getTime() + (rateSeconds * 1000))
   }
+
   static getJulianDate(date) {
     let year, month, day, hour, min, sec, julianDate
     year = date.getUTCFullYear()
@@ -22,6 +23,7 @@ export class Clock {
     julianDate += e
     return julianDate
   }
+
   static getCenturiesPastJ2000(date) {
     return (Clock.getJulianDate(date) - J2000) / DAYS_PER_JULIAN_CENTURY
   }
