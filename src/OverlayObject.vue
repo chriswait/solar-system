@@ -3,9 +3,13 @@
     v-if="object.position2D && shouldDisplay"
     :style="objectStyle"
     class="overlay-object"
-    @click="selectTargetObjectName(object.name)"
   >
-    {{object.name}}
+    <div
+      class="overlay-label"
+      @click="selectTargetObjectName(object.name)"
+    >
+      {{object.name}}
+    </div>
   </div>
 </template>
 
@@ -52,5 +56,11 @@ export default {
     border-color: skyblue;
     transform: translate(-50%, -50%);
     pointer-events: none;
+  }
+  .overlay-object:hover {
+    border-color: red;
+  }
+  .overlay-label {
+    pointer-events: auto;
   }
 </style>
