@@ -40,7 +40,6 @@ export class Screen {
   raycaster = new Raycaster()
   hoverObject
   mousePosition
-  controls
   scaleFactor = 1
   meshes = {}
 
@@ -59,14 +58,19 @@ export class Screen {
     }
   }
 
-  onResize() {
+  resetRendererSize() {
+    // clear existing styles before resetting
+    this.canvasElement.style.width = null
+    this.canvasElement.style.height = null
     this.width = this.canvasElement.clientWidth
-    this.height = window.innerHeight
-    this.renderer.setSize(this.width, this.height)
+    this.height = this.canvasElement.clientHeight
 
+    this.renderer.setSize(this.width, this.height)
+  }
+
+  resetCameraAspect() {
     this.camera.aspect = this.width / this.height
     this.camera.updateProjectionMatrix()
-    this.renderer.setSize(this.width, this.height)
   }
 
   initRenderer(canvasElement) {
@@ -76,17 +80,17 @@ export class Screen {
       antialias: true
     })
 
-    this.width = this.canvasElement.clientWidth
-    this.height = window.innerHeight
-    this.renderer.setSize(this.width, this.height)
+    this.resetRendererSize()
 
     this.camera = new PerspectiveCamera(VIEW_ANGLE, this.width / this.height, NEAR, FAR)
     this.camera.position.set(0, 0, 50)
-    this.scene.add(this.camera)
 
     document.addEventListener('mousemove', this.onMouseMove.bind(this), false)
     document.addEventListener('click', this.onClick.bind(this), false)
-    window.addEventListener('resize', this.onResize.bind(this), false)
+    window.addEventListener('resize', () => {
+      this.resetRendererSize()
+      this.resetCameraAspect()
+    }, false)
 
     this.loadStars()
   }
@@ -110,6 +114,17 @@ export class Screen {
             this.hoverObject.material.color = this.hoverObject.currentColor
             this.hoverObject = undefined
           }
+        }
+      }
+
+      if (store.getters.currentTargetName) {
+        let newParent = this.meshes[store.getters.currentTargetName]
+        if (this.camera.parent !== newParent) {
+          if (this.camera.parent) {
+            this.camera.parent.remove(this.camera)
+          }
+          newParent.add(this.camera)
+          this.camera.position.set(0, 0, 10)
         }
       }
 
@@ -137,22 +152,42 @@ export class Screen {
   }
 
   get2DCoordinateForObject3D(object3d) {
-    let vector = (new Vector3())
-    .setFromMatrixPosition(object3d.matrixWorld)
-    .project(this.camera)
-    vector.x = (vector.x * this.width / 2) + this.width / 2
-    vector.y = -(vector.y * this.height / 2) + this.height / 2
+    let vector = (new Vector3()).setFromMatrixPosition(object3d.matrixWorld)
+
+    // work out if behind camera
+    let lookAt = this.camera.getWorldDirection()
+    let cameraPos = new Vector3().setFromMatrixPosition(this.camera.matrixWorld)
+    let pos = (new Vector3()).copy(vector).sub(cameraPos)
+    let behind = pos.angleTo(lookAt) > (Math.PI / 2)
+    if (behind) return undefined
+
+    // work out screen coordinates
+    vector.project(this.camera)
+    let x = (vector.x * this.width / 2) + this.width / 2
+    let y = -(vector.y * this.height / 2) + this.height / 2
 
     // calculate draw size
+    let visibleHeight, dist
     let radius = object3d.geometry.parameters.radius
-    let dist = object3d.position.distanceTo(this.camera.position) - radius
-    let fov = degreesToRadians(this.camera.fov)
-    let height = 2 * Math.tan(fov / 2) * dist
-    let fraction = (radius * 2) / height
-    let visibleHeight = this.height * fraction
+    if (this.camera.parent) {
+      if (this.camera.parent === object3d) {
+        dist = this.camera.position.length()
+      } else {
+        // find the vector between the object and the camera
+        let objToCamera = (new Vector3())
+        .copy(object3d.position)
+        .add(this.camera.parent.position)
+        .add(this.camera.position)
+        dist = objToCamera.length()
+      }
+      let fov = degreesToRadians(this.camera.fov)
+      let height = 2 * Math.tan(fov / 2) * dist
+      let fraction = (radius * 2) / height
+      visibleHeight = this.height * fraction
+    }
     return {
-      x: vector.x,
-      y: vector.y,
+      x: x,
+      y: y,
       side: visibleHeight,
       dist: dist
     }

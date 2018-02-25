@@ -30,9 +30,6 @@ export default {
     lastObject: function() {
       let objects = this.$store.getters.objects
       return objects[objects.length - 1]
-    },
-    currentTargetPosition: function() {
-      return this.$store.getters.currentTargetPosition
     }
   },
   created() {
@@ -64,9 +61,6 @@ export default {
       this.objects.forEach((object) => {
         this.screen.redrawObject(object)
       })
-      if (this.currentTargetPosition) {
-        this.controls.target.copy(this.screen.scaleRealToVisualised(this.currentTargetPosition))
-      }
 
       this.controls.update()
       this.screen.render()
@@ -87,6 +81,6 @@ export default {
   #visualizer-container,
   #solar-system-canvas {
     width: 100%;
-    height: 100%;
+    height: 100vh;
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="object.position2D && shouldDisplay"
+    v-if="shouldDisplay"
     :style="objectStyle"
     class="overlay-object"
   >
@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     shouldDisplay: function() {
-      return this.object.position2D.dist > 0.5
+      return this.object.position2D && this.object.position2D.dist > 0.5
     },
     objectStyle: function() {
       let dist = this.object.position2D.dist
