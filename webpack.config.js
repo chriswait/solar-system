@@ -1,5 +1,5 @@
 var path = require('path')
-var webpack = require ('webpack')
+var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 
 require('babel-polyfill')
@@ -49,7 +49,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({ template: 'src/templates/index.html' }),
-    new webpack.NamedModulesPlugin(),
+    new webpack.LoaderOptionsPlugin({ options: {} }), // currently required for eslint
   ],
   stats: {
     colors: true
