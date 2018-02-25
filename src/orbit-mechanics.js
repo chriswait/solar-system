@@ -72,7 +72,8 @@ export class OrbitMechanics {
   static getPositionForElements(elements) {
     let position = new Vector3(
       elements.semiMajorAxisMeters * (Math.cos(elements.eccentricAnomalyRadians) - elements.eccentricityRadians),
-      elements.semiMajorAxisMeters * (Math.sqrt(1 - Math.pow(elements.eccentricityRadians, 2))) * Math.sin(elements.eccentricAnomalyRadians)
+      elements.semiMajorAxisMeters * (Math.sqrt(1 - Math.pow(elements.eccentricityRadians, 2))) * Math.sin(elements.eccentricAnomalyRadians),
+      0
     )
     let euler1 = new Euler(0, 0, elements.ascendingNodeLongitudeRadians, 'XYZ')
     let quaterion1 = new Quaternion().setFromEuler(euler1)

@@ -10,16 +10,16 @@ describe('should scale at default of 1', function() {
   })
   it('0, 0, 0', function() {
     expect(
-      screen.scaleRealToVisualised(new Vector3(0, 0, 0))
+      screen.realToVisualised(new Vector3(0, 0, 0))
     ).toEqual(
       new Vector3(0, 0, 0)
     )
   })
-  it('1, 1, 1', function() {
+  it('1, 2, 3', function() {
     expect(
-      screen.scaleRealToVisualised(new Vector3(1, 1, 1))
+      screen.realToVisualised(new Vector3(1, 2, 3))
     ).toEqual(
-      new Vector3(1, 1, 1)
+      new Vector3(1, 3, 2)
     )
   })
 })
@@ -39,7 +39,7 @@ describe('should scale correctly with scaleFactor set', function() {
   })
   it('0, 0, 0', function() {
     expect(
-      screen.scaleRealToVisualised(new Vector3(0, 0, 0))
+      screen.realToVisualised(new Vector3(0, 0, 0))
     ).toEqual(
       new Vector3(0, 0, 0)
     )
@@ -47,9 +47,21 @@ describe('should scale correctly with scaleFactor set', function() {
   it('1, 1, 1', function() {
     let scaledDistance = 500 / auToMeters(1)
     expect(
-      screen.scaleRealToVisualised(new Vector3(1, 1, 1))
+      screen.realToVisualised(new Vector3(1, 1, 1))
     ).toEqual(
       new Vector3(scaledDistance, scaledDistance, scaledDistance)
+    )
+  })
+})
+describe('should correct coordinate system', function() {
+  beforeEach(function() {
+    screen = new Screen()
+  })
+  it('1, 2, 3', function() {
+    expect(
+      screen.realToVisualised(new Vector3(1, 2, 3))
+    ).toEqual(
+      new Vector3(1, 3, 2)
     )
   })
 })

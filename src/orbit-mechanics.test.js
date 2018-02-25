@@ -41,11 +41,11 @@ describe('can get elements at date', function() {
     expect(newElements.periapsisLongitudeDegrees).toBe(keplerianElements.initial.periapsisLongitudeDegrees)
     expect(newElements.ascendingNodeLongitudeDegrees).toBe(keplerianElements.initial.ascendingNodeLongitudeDegrees)
     // computed parameters
-    expect(newElements.eccentricAnomalyRadians).toBe(6.239288029779582)
-    expect(newElements.meanAnomalyRadians).toBe(6.240021371704195)
+    expect(newElements.eccentricAnomalyRadians).toBe(6.239288048592674)
+    expect(newElements.meanAnomalyRadians).toBe(6.2400213902032)
     expect(newElements.ascendingNodeLongitudeRadians).toBe(0)
-    expect(newElements.inclinationRadians).toBe(6.283185039969563)
-    expect(newElements.periapsisArgumentRadians).toBe(1.7966022440288691)
+    expect(newElements.inclinationRadians).toBe(6.283185039969678)
+    expect(newElements.periapsisArgumentRadians).toBe(1.7966014740491711)
   })
   it('earth at J2100', function() {
     let keplerianElements = SolarSystemData.objects[3].orbit.keplerianElements
@@ -61,10 +61,10 @@ describe('can get elements at date', function() {
     expect(newElements.periapsisLongitudeDegrees).toBe(keplerianElements.initial.periapsisLongitudeDegrees + keplerianElements.rates.periapsisLongitudeDegrees)
     expect(newElements.ascendingNodeLongitudeDegrees).toBe(keplerianElements.initial.ascendingNodeLongitudeDegrees + keplerianElements.rates.ascendingNodeLongitudeDegrees)
     // computed parameters
-    expect(newElements.eccentricAnomalyRadians).toBe(6.222687926553071)
-    expect(newElements.meanAnomalyRadians).toBe(6.223695640193505)
+    expect(newElements.eccentricAnomalyRadians).toBe(6.222414114804273)
+    expect(newElements.meanAnomalyRadians).toBe(6.2234263837632895)
     expect(newElements.ascendingNodeLongitudeRadians).toBe(0)
-    expect(newElements.inclinationRadians).toBe(6.28295907767952)
-    expect(newElements.periapsisArgumentRadians).toBe(1.802244435849881)
+    expect(newElements.inclinationRadians).toBe(6.282959077776476)
+    expect(newElements.periapsisArgumentRadians).toBe(1.8022436634520778)
   })
 })

@@ -83,7 +83,6 @@ export class Screen {
     this.resetRendererSize()
 
     this.camera = new PerspectiveCamera(VIEW_ANGLE, this.width / this.height, NEAR, FAR)
-    this.camera.position.set(0, 0, 50)
 
     document.addEventListener('mousemove', this.onMouseMove.bind(this), false)
     document.addEventListener('click', this.onClick.bind(this), false)
@@ -124,7 +123,7 @@ export class Screen {
             this.camera.parent.remove(this.camera)
           }
           newParent.add(this.camera)
-          this.camera.position.set(0, 0, 10)
+          this.camera.position.set(0, 10, 0)
         }
       }
 
@@ -193,12 +192,14 @@ export class Screen {
     }
   }
 
-  scaleRealToVisualised(position) {
-    return new Vector3(position.x, position.y, position.z).multiplyScalar(this.scaleFactor)
+  realToVisualised(position) {
+    // OpenGL uses right-hand coordinate system: y-out, y-up
+    return new Vector3(position.x, position.z, position.y)
+    .multiplyScalar(this.scaleFactor) // scale
   }
 
   redrawObject(object) {
-    let newPositionScaled = this.scaleRealToVisualised(object.position)
+    let newPositionScaled = this.realToVisualised(object.position)
     this.meshes[object.name].position.copy(newPositionScaled)
     store.commit('setPosition2DForObject', {
       object: object,
@@ -231,7 +232,7 @@ export class Screen {
   drawOrbitForObject(object) {
     let radius = auToMeters(object.orbit.keplerianElements.initial.semiMajorAxisAu) * this.scaleFactor
     let geometry = new TorusGeometry(radius, 0.1, 3, 360, Math.PI * 2)
-    geometry.rotateX(Math.PI)
+    geometry.rotateX(Math.PI / 2) // rotate to horizontal
     let material = new MeshBasicMaterial({color: object.color})
     let mesh = new Mesh(geometry, material)
     mesh.position.set(0, 0, 0)
