@@ -23,7 +23,7 @@ import store from './store'
 
 const NEAR = 0.01
 const FAR = 3000
-const VIEW_ANGLE = 90
+const VIEW_ANGLE = 45
 const SPHERE_SEGMENTS = 16
 const SPHERE_RINGS = 16
 const ORBIT_MAX_UNITS = 500
@@ -42,6 +42,10 @@ export class Screen {
   mousePosition
   scaleFactor = 1
   meshes = {}
+
+  get cameraFOVRadians() {
+    return degreesToRadians(this.camera.fov)
+  }
 
   onMouseMove(event) {
     event.preventDefault()
@@ -79,9 +83,7 @@ export class Screen {
       canvas: this.canvasElement,
       antialias: true
     })
-
     this.resetRendererSize()
-
     this.camera = new PerspectiveCamera(VIEW_ANGLE, this.width / this.height, NEAR, FAR)
 
     document.addEventListener('mousemove', this.onMouseMove.bind(this), false)
@@ -151,43 +153,37 @@ export class Screen {
   }
 
   get2DCoordinateForObject3D(object3d) {
-    let vector = (new Vector3()).setFromMatrixPosition(object3d.matrixWorld)
+    if (!this.camera.parent) {
+      return undefined
+    }
 
-    // work out if behind camera
+    // get global coordinates
+    let objectVector = new Vector3().setFromMatrixPosition(object3d.matrixWorld)
+    let cameraVector = new Vector3().setFromMatrixPosition(this.camera.matrixWorld)
+    let projectedObjectVector = new Vector3().copy(objectVector).project(this.camera)
+
+    // ensure the camera can see the object
     let lookAt = this.camera.getWorldDirection()
-    let cameraPos = new Vector3().setFromMatrixPosition(this.camera.matrixWorld)
-    let pos = (new Vector3()).copy(vector).sub(cameraPos)
-    let behind = pos.angleTo(lookAt) > (Math.PI / 2)
-    if (behind) return undefined
+    let pos = new Vector3().copy(objectVector).sub(cameraVector)
+    if (pos.angleTo(lookAt) > this.cameraFOVRadians) {
+      return undefined
+    }
 
     // work out screen coordinates
-    vector.project(this.camera)
-    let x = (vector.x * this.width / 2) + this.width / 2
-    let y = -(vector.y * this.height / 2) + this.height / 2
+    let x = (projectedObjectVector.x * this.width / 2) + this.width / 2
+    let y = -(projectedObjectVector.y * this.height / 2) + this.height / 2
 
-    // calculate draw size
-    let visibleHeight, dist
-    let radius = object3d.geometry.parameters.radius
-    if (this.camera.parent) {
-      if (this.camera.parent === object3d) {
-        dist = this.camera.position.length()
-      } else {
-        // find the vector between the object and the camera
-        let objToCamera = (new Vector3())
-        .copy(object3d.position)
-        .add(this.camera.parent.position)
-        .add(this.camera.position)
-        dist = objToCamera.length()
-      }
-      let fov = degreesToRadians(this.camera.fov)
-      let height = 2 * Math.tan(fov / 2) * dist
-      let fraction = (radius * 2) / height
-      visibleHeight = this.height * fraction
-    }
+    // calculate visible dimensions based on camera's view
+    // the total visible height at dist is 2x the base of the triangle with angle of FOV/2 and length dist
+    let dist = cameraVector.distanceTo(objectVector)
+    let visibleHeight = 2 * Math.tan(this.cameraFOVRadians / 2) * dist
+    // scale the ratio of object height to visible height for the screen height
+    let heightPixels = this.height * (object3d.geometry.parameters.radius * 2) / visibleHeight
+
     return {
       x: x,
       y: y,
-      side: visibleHeight,
+      side: heightPixels,
       dist: dist
     }
   }
