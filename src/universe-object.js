@@ -7,7 +7,6 @@ export class UniverseObject {
   color
   orbit
   star
-  mesh
   position
   constructor(object) {
     this.name = object.name

@@ -1,8 +1,8 @@
-var path = require('path');
-var webpack = require ('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+var path = require('path')
+var webpack = require ('webpack')
+var HtmlWebpackPlugin = require('html-webpack-plugin')
 
-require('babel-polyfill');
+require('babel-polyfill')
 
 const config = {
   entry: {
@@ -50,7 +50,6 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({ template: 'src/templates/index.html' }),
     new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin()
   ],
   stats: {
     colors: true
@@ -60,12 +59,11 @@ const config = {
     host: 'localhost',
     port: 8080,
     contentBase: './dist',
-    hot: true
   },
   output: {
     path: path.resolve(__dirname, 'dist'), // eslint-disable-line no-undef
     publicPath: 'http://localhost:8080/',
     filename: '[name].bundle.js'
   },
-};
-module.exports = config;
+}
+module.exports = config
