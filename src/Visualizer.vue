@@ -57,9 +57,13 @@ export default {
     render() {
       this.$store.commit('tick')
       this.$store.dispatch('updatePositions')
+      this.$store.dispatch('updateLastOrbits')
 
       this.objects.forEach((object) => {
         this.screen.redrawObject(object)
+        if (object.lastOrbit) {
+          this.screen.redrawOrbitForObject(object)
+        }
       })
 
       this.controls.update()

@@ -1,5 +1,6 @@
 import {UniverseObject} from './universe-object'
 import SolarSystemData from './data/solar-system.json'
+import {ORBIT_POINTS} from './constants'
 
 let sunDictionary = SolarSystemData.objects[0]
 let earthDictionary = SolarSystemData.objects[3]
@@ -31,5 +32,15 @@ describe('should return position at centuries', function() {
     expect(typeof(position)).toEqual('object')
     expect(typeof(position.x)).toEqual('number')
     expect(position.x).toEqual(0)
+  })
+})
+
+describe('should return last orbit at centuries', function() {
+  it ('earth at J2000', function() {
+    let universeObject = new UniverseObject(earthDictionary)
+    let positions = universeObject.getLastOrbitAtCenturiesPastJ2000(1)
+    expect(positions.length === ORBIT_POINTS).toBeTruthy()
+    expect(Array.isArray(positions)).toBeTruthy()
+    expect(typeof(positions[0].x)).toEqual('number')
   })
 })

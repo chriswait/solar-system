@@ -60,6 +60,10 @@ const store = new Vuex.Store({
       let match = state.universeObjects.find((ob) => ob.name === object.name)
       Vue.set(match, 'position', position)
     },
+    setLastOrbitForObject: (state, {object, positions}) => {
+      let match = state.universeObjects.find((ob) => ob.name === object.name)
+      Vue.set(match, 'lastOrbit', positions)
+    },
     setPosition2DForObject: (state, {object, position2D}) => {
       let match = state.universeObjects.find((ob) => ob.name === object.name)
       Vue.set(match, 'position2D', position2D)
@@ -76,6 +80,15 @@ const store = new Vuex.Store({
         context.commit('setPositionForObject', {
           object: object,
           position: object.getPositionAtCenturiesPastJ2000(centuries)
+        })
+      })
+    },
+    updateLastOrbits: (context) => {
+      let centuries = context.getters.centuriesPastJ2000
+      context.getters.objects.forEach((object) => {
+        context.commit('setLastOrbitForObject', {
+          object: object,
+          positions: object.getLastOrbitAtCenturiesPastJ2000(centuries)
         })
       })
     }

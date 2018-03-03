@@ -1,5 +1,6 @@
 import {Vector3} from 'three'
 import {OrbitMechanics} from './orbit-mechanics'
+import {ORBIT_POINTS} from './constants'
 
 export class UniverseObject {
   name
@@ -21,13 +22,31 @@ export class UniverseObject {
   }
 
   getPositionAtCenturiesPastJ2000(currentCenturiesPastJ2000) {
-    let position
     if (!this.orbit) {
-      position = new Vector3(0, 0, 0)
-    } else {
-      let elements = OrbitMechanics.getElementsAtCenturiesPastJ2000(this.orbit.keplerianElements, currentCenturiesPastJ2000)
-      position = OrbitMechanics.getPositionForElements(elements)
+      return new Vector3(0, 0, 0)
     }
-    return position
+    let elements = OrbitMechanics.getElementsAtCenturiesPastJ2000(this.orbit.keplerianElements, currentCenturiesPastJ2000)
+    return OrbitMechanics.getPositionForElements(elements)
+  }
+
+  getLastOrbitAtCenturiesPastJ2000(currentCenturiesPastJ2000) {
+    if (!this.orbit) {
+      return
+    }
+
+    let positions = []
+    let siderealYears = 1 // for earth, todo for other objects
+    let siderealCenturies = siderealYears / 100
+    let stepCenturies = siderealCenturies / ORBIT_POINTS
+    let startCenturies = currentCenturiesPastJ2000 - siderealCenturies
+
+    let centuries
+    for (let iteration = 0; iteration < ORBIT_POINTS; iteration++) {
+      centuries = startCenturies + (iteration * stepCenturies)
+      let elements = OrbitMechanics.getElementsAtCenturiesPastJ2000(this.orbit.keplerianElements, centuries)
+      positions.push(OrbitMechanics.getPositionForElements(elements))
+    }
+
+    return positions
   }
 }

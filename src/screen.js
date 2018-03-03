@@ -1,6 +1,6 @@
 import {
   SphereGeometry,
-  TorusGeometry,
+  // TorusGeometry,
   MeshBasicMaterial,
   MeshDepthMaterial,
   MeshLambertMaterial,
@@ -20,6 +20,7 @@ import {
 import {auToMeters, degreesToRadians} from './util'
 import StarField from './images/starfield.png'
 import store from './store'
+import {ORBIT_POINTS} from './constants'
 
 const NEAR = 0.01
 const FAR = 3000
@@ -42,6 +43,7 @@ export class Screen {
   mousePosition
   scaleFactor = 1
   meshes = {}
+  orbitMeshes = {}
 
   get cameraFOVRadians() {
     return degreesToRadians(this.camera.fov)
@@ -125,7 +127,7 @@ export class Screen {
             this.camera.parent.remove(this.camera)
           }
           newParent.add(this.camera)
-          this.camera.position.set(0, 10, 0)
+          this.camera.position.set(0, 70, 0)
         }
       }
 
@@ -225,14 +227,39 @@ export class Screen {
     return light
   }
 
+  // drawOrbitForObject(object) {
+  //   let radius = auToMeters(object.orbit.keplerianElements.initial.semiMajorAxisAu) * this.scaleFactor
+  //   let geometry = new TorusGeometry(radius, 0.1, 3, 360, Math.PI * 2)
+  //   geometry.rotateX(Math.PI / 2) // rotate to horizontal
+  //   let material = new MeshBasicMaterial({color: object.color})
+  //   let mesh = new Mesh(geometry, material)
+  //   mesh.position.set(0, 0, 0)
+  //   this.scene.add(mesh)
+  //   return mesh
+  // }
+
   drawOrbitForObject(object) {
-    let radius = auToMeters(object.orbit.keplerianElements.initial.semiMajorAxisAu) * this.scaleFactor
-    let geometry = new TorusGeometry(radius, 0.1, 3, 360, Math.PI * 2)
-    geometry.rotateX(Math.PI / 2) // rotate to horizontal
-    let material = new MeshBasicMaterial({color: object.color})
-    let mesh = new Mesh(geometry, material)
-    mesh.position.set(0, 0, 0)
-    this.scene.add(mesh)
-    return mesh
+    let orbitMeshes = []
+    for (let i = 0; i < ORBIT_POINTS; i++) {
+      let radius = 0.1
+      let geometry = new SphereGeometry(radius, SPHERE_SEGMENTS, SPHERE_RINGS)
+      let material = new MeshLambertMaterial({color: new Color(object.color)})
+      let mesh = new Mesh(geometry, material)
+      orbitMeshes.push(mesh)
+      this.scene.add(mesh)
+    }
+    this.orbitMeshes[object.name] = orbitMeshes
+  }
+
+  redrawOrbitForObject(object) {
+    if (!object.lastOrbit) {
+      return
+    }
+    let orbitMeshes = this.orbitMeshes[object.name]
+    for (let i = 0; i < ORBIT_POINTS; i++) {
+      let mesh = orbitMeshes[i]
+      let positionScaled = this.realToVisualised(object.lastOrbit[i])
+      mesh.position.copy(positionScaled)
+    }
   }
 }
