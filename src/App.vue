@@ -10,6 +10,7 @@ import SolarSystemData from './data/solar-system'
 
 import Visualizer from './Visualizer'
 import ControlPanel from './ControlPanel'
+import {FRAME_RATE} from './constants'
 
 export default {
   name: 'App',
@@ -21,6 +22,23 @@ export default {
   },
   created: function() {
     this.$store.dispatch('loadUniverseObjects', SolarSystemData)
+    this.tick()
+    this.updatePositions()
+    this.updateOrbits()
+    setInterval(this.tick.bind(this), FRAME_RATE)
+    setInterval(this.updatePositions.bind(this), FRAME_RATE * 2)
+    setInterval(this.updateOrbits.bind(this), 60000)
+  },
+  methods: {
+    tick() {
+      this.$store.commit('tick')
+    },
+    updatePositions() {
+      this.$store.dispatch('updatePositions')
+    },
+    updateOrbits() {
+      this.$store.dispatch('updateLastOrbits')
+    },
   }
 }
 </script>

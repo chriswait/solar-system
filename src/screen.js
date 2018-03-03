@@ -1,9 +1,10 @@
 import {
   SphereGeometry,
-  // TorusGeometry,
+  Geometry,
   MeshBasicMaterial,
   MeshDepthMaterial,
   MeshLambertMaterial,
+  LineBasicMaterial,
   Mesh,
   PointLight,
   WebGLRenderer,
@@ -13,6 +14,7 @@ import {
   BackSide,
   Vector2,
   Vector3,
+  Line,
   Raycaster,
   Color
 } from 'three'
@@ -43,7 +45,7 @@ export class Screen {
   mousePosition
   scaleFactor = 1
   meshes = {}
-  orbitMeshes = {}
+  orbitLines = {}
 
   get cameraFOVRadians() {
     return degreesToRadians(this.camera.fov)
@@ -141,7 +143,7 @@ export class Screen {
       StarField,
       (texture) => {
         let material = new MeshBasicMaterial({map: texture})
-        let geometry = new SphereGeometry(ORBIT_MAX_UNITS, 32, 32)
+        let geometry = new SphereGeometry(ORBIT_MAX_UNITS * 2, 32, 32)
         let mesh = new Mesh(geometry, material)
         mesh.material.side = BackSide
         this.scene.add(mesh)
@@ -227,39 +229,25 @@ export class Screen {
     return light
   }
 
-  // drawOrbitForObject(object) {
-  //   let radius = auToMeters(object.orbit.keplerianElements.initial.semiMajorAxisAu) * this.scaleFactor
-  //   let geometry = new TorusGeometry(radius, 0.1, 3, 360, Math.PI * 2)
-  //   geometry.rotateX(Math.PI / 2) // rotate to horizontal
-  //   let material = new MeshBasicMaterial({color: object.color})
-  //   let mesh = new Mesh(geometry, material)
-  //   mesh.position.set(0, 0, 0)
-  //   this.scene.add(mesh)
-  //   return mesh
-  // }
-
-  drawOrbitForObject(object) {
-    let orbitMeshes = []
-    for (let i = 0; i < ORBIT_POINTS; i++) {
-      let radius = 0.1
-      let geometry = new SphereGeometry(radius, SPHERE_SEGMENTS, SPHERE_RINGS)
-      let material = new MeshLambertMaterial({color: new Color(object.color)})
-      let mesh = new Mesh(geometry, material)
-      orbitMeshes.push(mesh)
-      this.scene.add(mesh)
-    }
-    this.orbitMeshes[object.name] = orbitMeshes
-  }
-
   redrawOrbitForObject(object) {
     if (!object.lastOrbit) {
       return
     }
-    let orbitMeshes = this.orbitMeshes[object.name]
-    for (let i = 0; i < ORBIT_POINTS; i++) {
-      let mesh = orbitMeshes[i]
-      let positionScaled = this.realToVisualised(object.lastOrbit[i])
-      mesh.position.copy(positionScaled)
+    if (this.orbitLines[object.name]) {
+      this.scene.remove(this.orbitLines[object.name])
     }
+    let orbitGeometry = new Geometry()
+    let material = new LineBasicMaterial({color: new Color(object.color)})
+    for (let i = 0; i < ORBIT_POINTS; i++) {
+      let positionScaled = this.realToVisualised(object.lastOrbit[i])
+      orbitGeometry.vertices.push(positionScaled)
+    }
+    let positionScaled = this.realToVisualised(object.lastOrbit[0])
+    orbitGeometry.vertices.push(positionScaled)
+
+    let line = new Line(orbitGeometry, material)
+    this.scene.add(line)
+    this.orbitLines[object.name] = line
+
   }
 }

@@ -11,6 +11,7 @@
       "radius": 2440,
       "color": "#c09071",
       "orbit": {
+        "siderealYears": 0.240846,
         "keplerianElements": {
           "initial": {
             "semiMajorAxisAu": 0.38709927,
@@ -36,6 +37,7 @@
       "radius": 6052,
       "color": "#f2c1c5",
       "orbit": {
+        "siderealYears": 0.615,
         "keplerianElements": {
           "initial": {
             "semiMajorAxisAu": 0.72333566,
@@ -61,6 +63,7 @@
       "radius": 6371,
       "color": "#70cbe9",
       "orbit": {
+        "siderealYears": 1,
         "keplerianElements": {
           "initial": {
             "semiMajorAxisAu": 1.00000261,
@@ -86,6 +89,7 @@
       "radius": 3390,
       "color": "#d54734",
       "orbit": {
+        "siderealYears": 1.881,
         "keplerianElements": {
           "initial": {
             "semiMajorAxisAu": 1.52371034,
@@ -111,6 +115,7 @@
       "radius": 69911,
       "color": "#fef0a9",
       "orbit": {
+        "siderealYears": 11.86,
         "keplerianElements": {
           "initial": {
             "semiMajorAxisAu": 5.202887,
@@ -136,6 +141,7 @@
       "radius": 58232,
       "color": "#dc9e7c",
       "orbit": {
+        "siderealYears": 29.46,
         "keplerianElements": {
           "initial": {
             "semiMajorAxisAu": 9.53667594,
@@ -161,6 +167,7 @@
       "radius": 25362,
       "color": "#6db0f5",
       "orbit": {
+        "siderealYears": 84.01,
         "keplerianElements": {
           "initial": {
             "semiMajorAxisAu": 19.18916464,
@@ -186,6 +193,7 @@
       "radius": 24622,
       "color": "#3059af",
       "orbit": {
+        "siderealYears": 164.8,
         "keplerianElements": {
           "initial": {
             "semiMajorAxisAu": 30.06992276,
@@ -211,6 +219,7 @@
       "radius": 1187,
       "color": "#dbe8f0",
       "orbit": {
+        "siderealYears": 248.1,
         "keplerianElements": {
           "initial": {
             "semiMajorAxisAu": 39.48211675,

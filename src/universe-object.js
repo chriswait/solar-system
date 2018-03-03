@@ -13,11 +13,7 @@ export class UniverseObject {
     this.name = object.name
     this.radius = object.radius
     this.color = object.color
-    if (object.orbit) {
-      this.orbit = {
-        keplerianElements: object.orbit.keplerianElements
-      }
-    }
+    this.orbit = object.orbit
     this.star = object.star
   }
 
@@ -35,8 +31,7 @@ export class UniverseObject {
     }
 
     let positions = []
-    let siderealYears = 1 // for earth, todo for other objects
-    let siderealCenturies = siderealYears / 100
+    let siderealCenturies = this.orbit.siderealYears / 100
     let stepCenturies = siderealCenturies / ORBIT_POINTS
     let startCenturies = currentCenturiesPastJ2000 - siderealCenturies
 

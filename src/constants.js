@@ -5,4 +5,4 @@ export const DEG_TO_RADIANS = Math.PI / 180
 export const CIRCLE_RADIANS = Math.PI * 2
 export const J2000 = 2451545.0
 export const DAYS_PER_JULIAN_CENTURY = 36525
-export const ORBIT_POINTS = 10
+export const ORBIT_POINTS = 100

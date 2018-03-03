@@ -46,26 +46,18 @@ export default {
       if (object.star) {
         this.screen.drawLightForObject(object)
       }
-      if (object.orbit) {
-        this.screen.drawOrbitForObject(object)
-      }
     })
 
     requestAnimationFrame(this.render.bind(this))
   },
   methods: {
     render() {
-      this.$store.commit('tick')
-      this.$store.dispatch('updatePositions')
-      this.$store.dispatch('updateLastOrbits')
-
       this.objects.forEach((object) => {
         this.screen.redrawObject(object)
-        if (object.lastOrbit) {
+        if (object.orbit) {
           this.screen.redrawOrbitForObject(object)
         }
       })
-
       this.controls.update()
       this.screen.render()
       if (this.screen.camera) this.$store.commit('setCameraPosition', this.screen.camera.position)

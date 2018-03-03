@@ -5,7 +5,7 @@ import store from './store'
 if (window.WebGLRenderingContext) {
   new Vue({
     el: '#app',
-  store: store,
+    store: store,
     components: {
       App,
     },
