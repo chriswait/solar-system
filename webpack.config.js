@@ -1,71 +1,69 @@
 var path = require('path')
 var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
-
 require('babel-polyfill')
+const { VueLoaderPlugin } = require("vue-loader");
 
-module.exports = (env, argv) => {
-  let isDev = argv.mode === 'development'
-
-  return {
-    entry: {
-      app: './src/index.js'
-    },
-    resolve: {
-      extensions: ['.js', '.vue', '.json'],
-      alias: {
-        vue: 'vue/dist/vue.common.js'
-      }
-    },
-    module: {
-      rules: [
-        {
-          test: /\.vue$/,
-          loader: 'vue-loader',
-          options: {
-            loaders: {},
-            cssSourceMap: true
-          }
+module.exports = (env, argv) => ({
+  entry: {
+    app: './src/index.js'
+  },
+  output: {
+    path: path.resolve(__dirname, 'dist'), // eslint-disable-line no-undef
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(eot|ttf|woff|woff2)(\?\S*)?$/,
+        loader: "file-loader",
+        options: {
+          name: "[name][contenthash:8].[ext]",
         },
-        {
-          enforce: 'pre',
-          test: /\.js$/,
-          exclude: ['node_modules'],
-          loader: 'eslint-loader',
+      },
+      {
+        test: /\.(png|jpe?g|gif|webm|mp4|svg)$/,
+        loader: "file-loader",
+        options: {
+          outputPath: "assets",
+          esModule: false,
         },
-        {
-          test: /\.js$/,
-          loader: 'babel-loader',
-          exclude: ['node_modules'],
-          query: {
-            presets: ['env'],
-            plugins: ["transform-class-properties"]
-          }
+      },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'vue-style-loader',
+          'css-loader'
+        ]
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader'
         },
-        {
-          test: /\.(png|svg|jpg|gif)$/,
-          use: [
-            'file-loader'
-          ]
-        }
-      ]
+      },
+    ]
+  },
+  resolve: {
+    alias: {
+      vue$: "vue/dist/vue.esm.js",
     },
-    plugins: [
-      new HtmlWebpackPlugin({ template: 'src/templates/index.html' }),
-      new webpack.LoaderOptionsPlugin({ options: {} }), // currently required for eslint
-    ],
-    stats: {
-      colors: true
-    },
-    devtool: isDev ? 'source-map' : false,
-    devServer: {
-      host: 'localhost',
-      port: 8080,
-      contentBase: './dist',
-    },
-    output: {
-      path: path.resolve(__dirname, 'dist'), // eslint-disable-line no-undef
-      filename: '[name].bundle.js'
-    },
-  }
-}
+    extensions: ["*", ".js", ".vue", ".json"],
+  },
+  plugins: [
+    new VueLoaderPlugin(),
+    new HtmlWebpackPlugin({ template: 'src/templates/index.html' }),
+    new webpack.LoaderOptionsPlugin({ options: {} }), // currently required for eslint
+  ],
+  stats: {
+    colors: true
+  },
+  devtool: 'inline-source-map',
+  devServer: {
+    static: './dist',
+  },
+})
