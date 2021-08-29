@@ -65,5 +65,6 @@ module.exports = (env, argv) => ({
   devtool: 'inline-source-map',
   devServer: {
     static: './dist',
+    hot: false,
   },
 })
