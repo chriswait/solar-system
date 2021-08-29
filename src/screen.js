@@ -1,6 +1,6 @@
 import {
   SphereGeometry,
-  Geometry,
+  BufferGeometry,
   MeshBasicMaterial,
   MeshDepthMaterial,
   MeshLambertMaterial,
@@ -19,10 +19,10 @@ import {
   Color
 } from 'three'
 
-import {auToMeters, degreesToRadians} from './util'
+import { auToMeters, degreesToRadians } from './util'
 import StarField from './images/starfield.png'
 import store from './store'
-import {ORBIT_POINTS} from './constants'
+import { ORBIT_POINTS } from './constants'
 
 const NEAR = 0.01
 const FAR = 3000
@@ -142,7 +142,7 @@ export class Screen {
     loader.load(
       StarField,
       (texture) => {
-        let material = new MeshBasicMaterial({map: texture})
+        let material = new MeshBasicMaterial({ map: texture })
         let geometry = new SphereGeometry(ORBIT_MAX_UNITS * 2, 32, 32)
         let mesh = new Mesh(geometry, material)
         mesh.material.side = BackSide
@@ -167,7 +167,8 @@ export class Screen {
     let projectedObjectVector = new Vector3().copy(objectVector).project(this.camera)
 
     // ensure the camera can see the object
-    let lookAt = this.camera.getWorldDirection()
+    let lookAt = new Vector3();
+    this.camera.getWorldDirection(lookAt)
     let pos = new Vector3().copy(objectVector).sub(cameraVector)
     if (pos.angleTo(lookAt) > this.cameraFOVRadians) {
       return undefined
@@ -195,7 +196,7 @@ export class Screen {
   realToVisualised(position) {
     // OpenGL uses right-hand coordinate system: y-out, y-up
     return new Vector3(position.x, position.z, position.y)
-    .multiplyScalar(this.scaleFactor) // scale
+      .multiplyScalar(this.scaleFactor) // scale
   }
 
   redrawObject(object) {
@@ -214,7 +215,7 @@ export class Screen {
     if (object.star) {
       material = new MeshDepthMaterial()
     } else {
-      material = new MeshLambertMaterial({color: new Color(object.color)})
+      material = new MeshLambertMaterial({ color: new Color(object.color) })
     }
     let mesh = new Mesh(geometry, material)
     mesh.userData.name = object.name
@@ -236,15 +237,19 @@ export class Screen {
     if (this.orbitLines[object.name]) {
       this.scene.remove(this.orbitLines[object.name])
     }
-    let orbitGeometry = new Geometry()
-    let material = new LineBasicMaterial({color: new Color(object.color)})
+
+    const points = [];
     for (let i = 0; i < ORBIT_POINTS; i++) {
       let positionScaled = this.realToVisualised(object.lastOrbit[i])
-      orbitGeometry.vertices.push(positionScaled)
+      // orbitGeometry.vertices.push(positionScaled)
+      points.push(positionScaled);
     }
     let positionScaled = this.realToVisualised(object.lastOrbit[0])
-    orbitGeometry.vertices.push(positionScaled)
+    points.push(positionScaled);
+    // orbitGeometry.vertices.push(positionScaled)
 
+    let orbitGeometry = new BufferGeometry().setFromPoints(points);
+    let material = new LineBasicMaterial({ color: new Color(object.color) })
     let line = new Line(orbitGeometry, material)
     this.scene.add(line)
     this.orbitLines[object.name] = line
