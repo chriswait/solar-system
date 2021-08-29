@@ -14,7 +14,7 @@
 <script>
 import OverlayObject from './OverlayObject'
 
-import OrbitControls from './orbit-controls'
+import {OrbitControls} from './orbit-controls'
 import {Screen} from './screen'
 import {FRAME_RATE} from './constants'
 
