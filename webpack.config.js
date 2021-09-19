@@ -1,15 +1,13 @@
-var path = require('path')
-var webpack = require('webpack')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-require('babel-polyfill')
-const { VueLoaderPlugin } = require("vue-loader");
+var path = require("path");
+var webpack = require("webpack");
+var HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = (env, argv) => ({
   entry: {
-    app: './src/index.js'
+    app: "./src/index.js",
   },
   output: {
-    path: path.resolve(__dirname, 'dist'), // eslint-disable-line no-undef
+    path: path.resolve(__dirname, "dist"),
   },
   module: {
     rules: [
@@ -29,42 +27,30 @@ module.exports = (env, argv) => ({
         },
       },
       {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-      },
-      {
-        test: /\.css$/,
-        use: [
-          'vue-style-loader',
-          'css-loader'
-        ]
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
+          loader: "babel-loader",
         },
       },
-    ]
-  },
-  resolve: {
-    alias: {
-      vue$: "vue/dist/vue.esm.js",
-    },
-    extensions: ["*", ".js", ".vue", ".json"],
+    ],
   },
   plugins: [
-    new VueLoaderPlugin(),
-    new HtmlWebpackPlugin({ template: 'src/templates/index.html' }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, "src", "templates", "index.html"),
+    }),
     new webpack.LoaderOptionsPlugin({ options: {} }), // currently required for eslint
   ],
   stats: {
-    colors: true
+    colors: true,
   },
-  devtool: 'inline-source-map',
+  devtool: "inline-source-map",
   devServer: {
-    static: './dist',
+    static: "./dist",
     hot: false,
   },
-})
+});

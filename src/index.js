@@ -1,16 +1,19 @@
-import Vue from 'vue'
-import App from './App'
-import store from './store'
+import App from "./App.js";
+import SolarSystemProvider from "./SolarSystemProvider.js";
+import ClockProvider from "./ClockProvider.js";
+import React from "react";
+import { render } from "react-dom";
+import "./index.css";
 
 if (window.WebGLRenderingContext) {
-  new Vue({
-    el: '#app',
-    store: store,
-    components: {
-      App,
-    },
-    template: '<App/>'
-  })
+  render(
+    <ClockProvider>
+      <SolarSystemProvider>
+        <App />
+      </SolarSystemProvider>
+    </ClockProvider>,
+    document.getElementById("app")
+  );
 } else {
-  window.location = 'http://get.webgl.org/'
+  window.location = "http://get.webgl.org/";
 }
