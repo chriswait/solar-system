@@ -122,9 +122,8 @@ const Stars = () => {
 const Visualiser = () => {
   const ContextBridge = useContextBridge(SolarSystemContext, VisualiserContext);
   const { objects } = useSolarSystem();
-  const { currentTargetPosition, currentTargetObject, scaleFactor } =
+  const { currentTargetPosition, currentTargetObject, scaleFactor, cameraRef } =
     useVisualiser();
-  const cameraRef = useRef();
 
   return (
     <div id="visualizer-container">
@@ -135,7 +134,7 @@ const Visualiser = () => {
             enableDamping={true}
             target={currentTargetPosition}
             maxDistance={ORBIT_MAX_UNITS * 2}
-            // minDistance={currentTargetObject.radius * 1000 * scaleFactor * 200}
+            minDistance={currentTargetObject.radius * 1000 * scaleFactor * 50}
           />
           <PerspectiveCamera
             makeDefault

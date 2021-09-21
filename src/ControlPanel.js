@@ -12,7 +12,7 @@ const ControlPanel = () => {
     setClockRateSeconds,
   } = useClock();
   const { objects } = useSolarSystem();
-  const { currentTargetName, currentTargetPosition, setTargetName } =
+  const { currentTargetName, currentTargetPosition, setTargetName, cameraRef } =
     useVisualiser();
   return (
     <div id="control-panel">
@@ -40,17 +40,17 @@ const ControlPanel = () => {
             <div>{centuriesPastJ2000.toFixed(3)}</div>
           </div>
         </div>
-        {/* <div className="panel">
+        <div className="panel">
           <h2>Camera</h2>
-          {cameraPosition && (
+          {cameraRef.current && (
             <div>
               <h3>cameraPosition</h3>
-              <div>x: {cameraPosition.x}</div>
-              <div>y: {cameraPosition.y}</div>
-              <div>z: {cameraPosition.z}</div>
+              <div>x: {cameraRef.current.position.x}</div>
+              <div>y: {cameraRef.current.position.y}</div>
+              <div>z: {cameraRef.current.position.z}</div>
             </div>
           )}
-        </div> */}
+        </div>
         <div className="panel">
           <h3>target</h3>
           {currentTargetName && <div>{currentTargetName}</div>}

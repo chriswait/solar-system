@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useRef } from "react";
 import { Vector3 } from "three";
 
 import { useSolarSystem } from "./SolarSystemProvider";
@@ -8,6 +8,7 @@ const ORBIT_MAX_UNITS = 500;
 export const VisualiserContext = createContext({});
 
 const VisualiserProvider = ({ children }) => {
+  const cameraRef = useRef();
   const { objects, lastObject } = useSolarSystem();
 
   const furthestOrbitMeters = auToMeters(
@@ -22,6 +23,7 @@ const VisualiserProvider = ({ children }) => {
   const currentTargetPosition = realToVisualised(currentTargetObject.position);
 
   const value = {
+    cameraRef,
     currentTargetName: targetName,
     setTargetName,
     currentTargetObject,
