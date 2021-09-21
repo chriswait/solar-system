@@ -1,12 +1,12 @@
 import React from "react";
 
-import Visualizer from "./Visualizer.js";
+import Visualiser from "./Visualiser.js";
 import ControlPanel from "./ControlPanel.js";
 
 const App = () => {
   return (
     <div id="container">
-      <Visualizer />
+      <Visualiser />
       <ControlPanel />
     </div>
   );

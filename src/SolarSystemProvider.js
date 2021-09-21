@@ -4,7 +4,7 @@ import { useClock } from "./ClockProvider";
 import { UniverseObject } from "./universe-object";
 import SolarSystemData from "./data/solar-system";
 
-const SolarSystemContext = createContext();
+export const SolarSystemContext = createContext();
 
 const SolarSystemProvider = ({ children }) => {
   const { centuriesPastJ2000 } = useClock();
@@ -21,29 +21,9 @@ const SolarSystemProvider = ({ children }) => {
   }));
   const lastObject = objectsWithPositions[objectsWithPositions.length - 1];
 
-  const [targetName, setTargetName] = useState("sun");
-  const currentTargetObject = objectsWithPositions.find(
-    ({ name }) => name === targetName
-  );
-
-  const [cameraPosition, setCameraPosition] = useState(null);
-
   const value = {
-    // getters
-    lastObject,
-    currentTargetName: targetName,
-    currentTargetObject,
-    currentTargetPosition: currentTargetObject?.position,
-    currentCameraPosition: cameraPosition,
     objects: objectsWithPositions,
-    objectWithName: () => {
-      return (name) => {
-        return universeObjects.find((ob) => ob.name === name);
-      };
-    },
-    // mutations
-    setTargetName,
-    setCameraPosition,
+    lastObject,
   };
 
   return (
