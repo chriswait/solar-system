@@ -6,6 +6,8 @@ import {
   PerspectiveCamera,
   OrbitControls,
   useContextBridge,
+  Detailed,
+  Icosahedron,
 } from "@react-three/drei";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 
@@ -16,7 +18,7 @@ import StarField from "./images/starfield.png";
 import { ORBIT_POINTS } from "./constants";
 import { VisualiserContext, useVisualiser } from "./VisualiserProvider";
 
-const NEAR = 0.01;
+const NEAR = 0.001;
 const VIEW_ANGLE = 45;
 const SPHERE_SEGMENTS = 16;
 const SPHERE_RINGS = 16;
@@ -32,21 +34,26 @@ const Star = ({ object }) => {
   const { scaleFactor, setTargetName } = useVisualiser();
   const radius = object.radius * 1000 * scaleFactor * 10;
   return (
-    <mesh onClick={() => setTargetName(object.name)}>
-      <sphereGeometry
-        attach="geometry"
-        args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
-      />
-      <Suspense
-        fallback={
-          <meshLambertMaterial attach="material" color={object.color} />
-        }
-      >
-        <BodyMesh map={object.map} />
-      </Suspense>
-      <pointLight color="white" intensity={0.1} distance={0} />
-      <ambientLight color="white" intensity={0.1} />
-    </mesh>
+    <Detailed distances={[0, radius * 20]}>
+      <mesh onClick={() => setTargetName(object.name)}>
+        <sphereGeometry
+          attach="geometry"
+          args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
+        />
+        <Suspense
+          fallback={
+            <meshLambertMaterial attach="material" color={object.color} />
+          }
+        >
+          <BodyMesh map={object.map} />
+        </Suspense>
+        <pointLight color="white" intensity={0.1} distance={0} />
+        <ambientLight color="white" intensity={0.1} />
+      </mesh>
+      <Icosahedron args={[radius, 3]}>
+        <meshBasicMaterial attach="material" color={object.color} wireframe />
+      </Icosahedron>
+    </Detailed>
   );
 };
 
@@ -73,15 +80,15 @@ const Orbit = ({ object }) => {
 const Planet = ({ object }) => {
   const { realToVisualised, scaleFactor, setTargetName } = useVisualiser();
   const position = realToVisualised(object.position);
-  const radius = object.radius * 1000 * scaleFactor * 100;
+  const radius = object.radius * 1000 * scaleFactor * 10;
   return (
     <>
-      <mesh position={position} onClick={() => setTargetName(object.name)}>
-        <sphereGeometry
-          attach="geometry"
-          args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
-        />
-        {object.map && (
+      <Detailed distances={[0, radius * 20]} position={position}>
+        <mesh onClick={() => setTargetName(object.name)}>
+          <sphereGeometry
+            attach="geometry"
+            args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
+          />
           <Suspense
             fallback={
               <meshLambertMaterial attach="material" color={object.color} />
@@ -89,8 +96,11 @@ const Planet = ({ object }) => {
           >
             <BodyMesh map={object.map} />
           </Suspense>
-        )}
-      </mesh>
+        </mesh>
+        <Icosahedron args={[radius, 6]}>
+          <meshBasicMaterial attach="material" color={object.color} wireframe />
+        </Icosahedron>
+      </Detailed>
       <Orbit object={object} />
     </>
   );
@@ -122,9 +132,10 @@ const Visualiser = () => {
         <ContextBridge>
           <OrbitControls
             camera={cameraRef.current}
+            enableDamping={true}
             target={currentTargetPosition}
             maxDistance={ORBIT_MAX_UNITS * 2}
-            minDistance={currentTargetObject.radius * 1000 * scaleFactor * 200}
+            // minDistance={currentTargetObject.radius * 1000 * scaleFactor * 200}
           />
           <PerspectiveCamera
             makeDefault
