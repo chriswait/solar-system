@@ -73,7 +73,7 @@ const Orbit = ({ object }) => {
 const Planet = ({ object }) => {
   const { realToVisualised, scaleFactor, setTargetName } = useVisualiser();
   const position = realToVisualised(object.position);
-  const radius = object.radius * 1000 * scaleFactor * 1000;
+  const radius = object.radius * 1000 * scaleFactor * 100;
   return (
     <>
       <mesh position={position} onClick={() => setTargetName(object.name)}>
@@ -112,7 +112,8 @@ const Stars = () => {
 const Visualiser = () => {
   const ContextBridge = useContextBridge(SolarSystemContext, VisualiserContext);
   const { objects } = useSolarSystem();
-  const { currentTargetPosition } = useVisualiser();
+  const { currentTargetPosition, currentTargetObject, scaleFactor } =
+    useVisualiser();
   const cameraRef = useRef();
 
   return (
@@ -123,6 +124,7 @@ const Visualiser = () => {
             camera={cameraRef.current}
             target={currentTargetPosition}
             maxDistance={ORBIT_MAX_UNITS * 2}
+            minDistance={currentTargetObject.radius * 1000 * scaleFactor * 200}
           />
           <PerspectiveCamera
             makeDefault
