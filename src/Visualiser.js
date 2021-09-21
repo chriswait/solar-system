@@ -17,7 +17,6 @@ import { ORBIT_POINTS } from "./constants";
 import { VisualiserContext, useVisualiser } from "./VisualiserProvider";
 
 const NEAR = 0.01;
-const FAR = 3000;
 const VIEW_ANGLE = 45;
 const SPHERE_SEGMENTS = 16;
 const SPHERE_RINGS = 16;
@@ -29,12 +28,11 @@ const BodyMesh = ({ map }) => {
   return <meshBasicMaterial attach="material" map={mapTexture} rotation={1} />;
 };
 
-const Star = ({ object, selectTarget }) => {
-  const { scaleFactor } = useVisualiser();
-  const meshRef = useRef();
+const Star = ({ object }) => {
+  const { scaleFactor, setTargetName } = useVisualiser();
   const radius = object.radius * 1000 * scaleFactor * 10;
   return (
-    <mesh onClick={() => selectTarget(object, meshRef.current)} ref={meshRef}>
+    <mesh onClick={() => setTargetName(object.name)}>
       <sphereGeometry
         attach="geometry"
         args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
@@ -72,18 +70,13 @@ const Orbit = ({ object }) => {
   );
 };
 
-const Planet = ({ object, selectTarget }) => {
-  const { realToVisualised, scaleFactor } = useVisualiser();
-  const meshRef = useRef();
+const Planet = ({ object }) => {
+  const { realToVisualised, scaleFactor, setTargetName } = useVisualiser();
   const position = realToVisualised(object.position);
   const radius = object.radius * 1000 * scaleFactor * 1000;
   return (
     <>
-      <mesh
-        position={position}
-        onClick={() => selectTarget(object, meshRef.current)}
-        ref={meshRef}
-      >
+      <mesh position={position} onClick={() => setTargetName(object.name)}>
         <sphereGeometry
           attach="geometry"
           args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
@@ -119,14 +112,8 @@ const Stars = () => {
 const Visualiser = () => {
   const ContextBridge = useContextBridge(SolarSystemContext, VisualiserContext);
   const { objects } = useSolarSystem();
-  const { setTargetName, currentTargetPosition } = useVisualiser();
+  const { currentTargetPosition } = useVisualiser();
   const cameraRef = useRef();
-  const currentTargetPositionRef = useRef();
-
-  const selectTarget = (object, mesh) => {
-    currentTargetPositionRef.current = mesh.position;
-    setTargetName(object.name);
-  };
 
   return (
     <div id="visualizer-container">
@@ -135,12 +122,13 @@ const Visualiser = () => {
           <OrbitControls
             camera={cameraRef.current}
             target={currentTargetPosition}
+            maxDistance={ORBIT_MAX_UNITS * 2}
           />
           <PerspectiveCamera
             makeDefault
             fov={VIEW_ANGLE}
             near={NEAR}
-            far={FAR}
+            far={ORBIT_MAX_UNITS * 4}
             ref={cameraRef}
             position={[0, 70, 0]}
           />
@@ -149,18 +137,9 @@ const Visualiser = () => {
           </Suspense>
           {objects.map((object) =>
             object.star ? (
-              <Star
-                key={object.name}
-                object={object}
-                selectTarget={selectTarget}
-              />
+              <Star key={object.name} object={object} />
             ) : (
-              <Planet
-                key={object.name}
-                object={object}
-                key={object.name}
-                selectTarget={selectTarget}
-              />
+              <Planet key={object.name} object={object} key={object.name} />
             )
           )}
         </ContextBridge>
