@@ -7,7 +7,7 @@ const ClockContext = createContext();
 
 const ClockProvider = ({ children }) => {
   const [date, setDate] = useState(new Date());
-  const [clockRateSeconds, setClockRateSeconds] = useState(1);
+  const [clockRateSeconds, setClockRateSeconds] = useState(1000);
 
   const tick = (seconds) =>
     setDate((currentDate) => Clock.getDateAfterNextTick(currentDate, seconds));

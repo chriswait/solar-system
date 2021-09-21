@@ -20,19 +20,30 @@ const SPHERE_RINGS = 16;
 const ORBIT_MAX_UNITS = 500;
 const HOVER_COLOR = "white";
 
-const realToVisualised = ({ x, y, z }, scaleFactor, setTargetName) =>
+const realToVisualised = ({ x, y, z }, scaleFactor) =>
   new Vector3(x, z, y).multiplyScalar(scaleFactor);
 
-const Star = ({ object, scaleFactor }) => {
+const Star = ({ object, scaleFactor, currentTargetMeshRef, setTargetName }) => {
+  const map = useLoader(TextureLoader, object.map);
   const radius = object.radius * 1000 * scaleFactor * 10;
   return (
-    <mesh onClick={() => setTargetName(object.name)}>
+    <mesh onClick={() => setTargetName(object.name)} ref={currentTargetMeshRef}>
       <sphereGeometry
         attach="geometry"
         args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
       />
-      <meshLambertMaterial attach="material" color="white" />
-      <pointLight color="white" intensity={1} distance={0} />
+      <Suspense
+        fallback={
+          <meshLambertMaterial
+            attach="material"
+            args={[{ color: object.color }]}
+          />
+        }
+      >
+        <meshBasicMaterial attach="material" map={map} rotation={1} />
+      </Suspense>
+      <pointLight color="white" intensity={0.1} distance={0} />
+      <ambientLight color="white" intensity={0.1} />
     </mesh>
   );
 };
@@ -62,7 +73,8 @@ const Planet = ({
   currentTargetMeshRef,
   setTargetName,
 }) => {
-  const radius = object.radius * 1000 * scaleFactor * 1000;
+  const map = useLoader(TextureLoader, object.map);
+  const radius = object.radius * 1000 * scaleFactor * 10;
   return (
     <mesh
       position={realToVisualised(object.position, scaleFactor)}
@@ -73,7 +85,16 @@ const Planet = ({
         attach="geometry"
         args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
       />
-      <meshLambertMaterial attach="material" args={[{ color: object.color }]} />
+      <Suspense
+        fallback={
+          <meshLambertMaterial
+            attach="material"
+            args={[{ color: object.color }]}
+          />
+        }
+      >
+        <meshBasicMaterial attach="material" map={map} rotation={1} />
+      </Suspense>
     </mesh>
   );
 };
@@ -122,17 +143,9 @@ const Visualizer = () => {
         </Suspense>
         {objects.map((object) =>
           object.star ? (
-            <Star
-              object={object}
-              key={object.name}
-              scaleFactor={scaleFactor}
-              setTargetName={setTargetName}
-            />
-          ) : (
-            <React.Fragment key={object.name}>
-              <Planet
+            <Suspense fallback={<>Loading</>} key={object.name}>
+              <Star
                 object={object}
-                key={object.name}
                 scaleFactor={scaleFactor}
                 currentTargetMeshRef={
                   object.name === currentTargetName
@@ -141,8 +154,26 @@ const Visualizer = () => {
                 }
                 setTargetName={setTargetName}
               />
-              <Orbit object={object} scaleFactor={scaleFactor} />
-            </React.Fragment>
+            </Suspense>
+          ) : (
+            object.map && (
+              <React.Fragment key={object.name}>
+                <Suspense fallback={<>Loading</>}>
+                  <Planet
+                    object={object}
+                    key={object.name}
+                    scaleFactor={scaleFactor}
+                    currentTargetMeshRef={
+                      object.name === currentTargetName
+                        ? currentTargetMeshRef
+                        : undefined
+                    }
+                    setTargetName={setTargetName}
+                  />
+                  <Orbit object={object} scaleFactor={scaleFactor} />
+                </Suspense>
+              </React.Fragment>
+            )
           )
         )}
       </Canvas>

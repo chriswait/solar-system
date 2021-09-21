@@ -9,7 +9,7 @@ const SolarSystemContext = createContext();
 const SolarSystemProvider = ({ children }) => {
   const { centuriesPastJ2000 } = useClock();
 
-  const [universeObjects, setUniverseObjects] = useState(
+  const [universeObjects] = useState(
     SolarSystemData.objects.map(
       (solarSystemObject) => new UniverseObject(solarSystemObject)
     )

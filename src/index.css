@@ -4,6 +4,7 @@ body {
   height: 100vh;
   overflow: hidden;
   margin: 0;
+  font-family: sans-serif;
 }
 
 #container {
@@ -31,6 +32,15 @@ body {
 }
 #control-panel-content {
   padding: 10px;
+  overflow-y: scroll;
+}
+#control-panel .row {
+  display: flex;
+}
+#control-panel .row *:first-child {
+  min-width: 100px;
+  margin-right: 10px;
+  flex-shrink: 0;
 }
 .selected {
   color: red;
