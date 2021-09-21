@@ -1,6 +1,7 @@
 import React from "react";
 import { useClock } from "./ClockProvider";
 import { useSolarSystem } from "./SolarSystemProvider";
+import { useVisualiser } from "./VisualiserProvider";
 
 const ControlPanel = () => {
   const {
@@ -10,13 +11,9 @@ const ControlPanel = () => {
     clockRateSeconds,
     setClockRateSeconds,
   } = useClock();
-  const {
-    cameraPosition,
-    currentTargetName,
-    currentTargetPosition,
-    objects,
-    setTargetName,
-  } = useSolarSystem();
+  const { objects } = useSolarSystem();
+  const { currentTargetName, currentTargetPosition, setTargetName } =
+    useVisualiser();
   return (
     <div id="control-panel">
       <div id="control-panel-content">
@@ -43,7 +40,7 @@ const ControlPanel = () => {
             <div>{centuriesPastJ2000.toFixed(3)}</div>
           </div>
         </div>
-        <div className="panel">
+        {/* <div className="panel">
           <h2>Camera</h2>
           {cameraPosition && (
             <div>
@@ -53,7 +50,7 @@ const ControlPanel = () => {
               <div>z: {cameraPosition.z}</div>
             </div>
           )}
-        </div>
+        </div> */}
         <div className="panel">
           <h3>target</h3>
           {currentTargetName && <div>{currentTargetName}</div>}

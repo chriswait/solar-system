@@ -73,9 +73,7 @@ const Orbit = ({ object }) => {
 };
 
 const Planet = ({ object, selectTarget }) => {
-  const stuff = useVisualiser();
-  console.log(stuff);
-  const { realToVisualised, scaleFactor } = stuff;
+  const { realToVisualised, scaleFactor } = useVisualiser();
   const meshRef = useRef();
   const position = realToVisualised(object.position);
   const radius = object.radius * 1000 * scaleFactor * 1000;
