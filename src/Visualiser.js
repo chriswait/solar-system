@@ -1,4 +1,4 @@
-import React, { Suspense, useRef, useCallback } from "react";
+import React, { Suspense, useState, useCallback } from "react";
 
 import { BackSide } from "three";
 import { Canvas, useLoader } from "@react-three/fiber";
@@ -8,6 +8,8 @@ import {
   useContextBridge,
   Detailed,
   Icosahedron,
+  Stats,
+  Html,
 } from "@react-three/drei";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 
@@ -81,10 +83,16 @@ const Planet = ({ object }) => {
   const { realToVisualised, scaleFactor, setTargetName } = useVisualiser();
   const position = realToVisualised(object.position);
   const radius = object.radius * 1000 * scaleFactor * 10;
+  const onClick = () => setTargetName(object.name);
+  const label = (
+    <Html style={{ color: "white" }}>
+      <div onClick={onClick}>{object.name}</div>
+    </Html>
+  );
   return (
     <>
       <Detailed distances={[0, radius * 20]} position={position}>
-        <mesh onClick={() => setTargetName(object.name)}>
+        <mesh onClick={onClick}>
           <sphereGeometry
             attach="geometry"
             args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
@@ -97,8 +105,9 @@ const Planet = ({ object }) => {
             <BodyMesh map={object.map} />
           </Suspense>
         </mesh>
-        <Icosahedron args={[radius, 6]}>
+        <Icosahedron args={[radius, 6]} onClick={onClick}>
           <meshBasicMaterial attach="material" color={object.color} wireframe />
+          {label}
         </Icosahedron>
       </Detailed>
       <Orbit object={object} />
@@ -126,37 +135,40 @@ const Visualiser = () => {
     useVisualiser();
 
   return (
-    <div id="visualizer-container">
-      <Canvas>
-        <ContextBridge>
-          <OrbitControls
-            camera={cameraRef.current}
-            enableDamping={true}
-            target={currentTargetPosition}
-            maxDistance={ORBIT_MAX_UNITS * 2}
-            minDistance={currentTargetObject.radius * 1000 * scaleFactor * 50}
-          />
-          <PerspectiveCamera
-            makeDefault
-            fov={VIEW_ANGLE}
-            near={NEAR}
-            far={ORBIT_MAX_UNITS * 4}
-            ref={cameraRef}
-            position={[0, 70, 0]}
-          />
-          <Suspense fallback={<>Loading</>}>
-            <Stars />
-          </Suspense>
-          {objects.map((object) =>
-            object.star ? (
-              <Star key={object.name} object={object} />
-            ) : (
-              <Planet key={object.name} object={object} key={object.name} />
-            )
-          )}
-        </ContextBridge>
-      </Canvas>
-    </div>
+    <>
+      <div id="visualizer-container">
+        <Canvas>
+          <Stats />
+          <ContextBridge>
+            <OrbitControls
+              camera={cameraRef.current}
+              enableDamping={true}
+              target={currentTargetPosition}
+              maxDistance={ORBIT_MAX_UNITS * 2}
+              minDistance={currentTargetObject.radius * 1000 * scaleFactor * 50}
+            />
+            <PerspectiveCamera
+              makeDefault
+              fov={VIEW_ANGLE}
+              near={NEAR}
+              far={ORBIT_MAX_UNITS * 4}
+              ref={cameraRef}
+              position={[0, 70, 0]}
+            />
+            <Suspense fallback={<>Loading</>}>
+              <Stars />
+            </Suspense>
+            {objects.map((object) =>
+              object.star ? (
+                <Star key={object.name} object={object} />
+              ) : (
+                <Planet key={object.name} object={object} key={object.name} />
+              )
+            )}
+          </ContextBridge>
+        </Canvas>
+      </div>
+    </>
   );
 };
 export default Visualiser;
