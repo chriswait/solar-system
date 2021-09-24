@@ -1,7 +1,7 @@
-import React, { Suspense, useState, useCallback } from "react";
+import React, { Suspense, useCallback, Fragment } from "react";
 
 import { BackSide } from "three";
-import { Canvas, useLoader } from "@react-three/fiber";
+import { Canvas, useLoader, useFrame } from "@react-three/fiber";
 import {
   PerspectiveCamera,
   OrbitControls,
@@ -14,7 +14,6 @@ import {
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 
 import { SolarSystemContext, useSolarSystem } from "./SolarSystemProvider";
-import OverlayObject from "./OverlayObject";
 
 import StarField from "./images/starfield.png";
 import { ORBIT_POINTS } from "./constants";
@@ -80,8 +79,7 @@ const Orbit = ({ object }) => {
 };
 
 const Planet = ({ object }) => {
-  const { realToVisualised, scaleFactor, setTargetName } = useVisualiser();
-  const position = realToVisualised(object.position);
+  const { scaleFactor, setTargetName } = useVisualiser();
   const radius = object.radius * 1000 * scaleFactor * 10;
   const onClick = () => setTargetName(object.name);
   const label = (
@@ -90,28 +88,25 @@ const Planet = ({ object }) => {
     </Html>
   );
   return (
-    <>
-      <Detailed distances={[0, radius * 20]} position={position}>
-        <mesh onClick={onClick}>
-          <sphereGeometry
-            attach="geometry"
-            args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
-          />
-          <Suspense
-            fallback={
-              <meshLambertMaterial attach="material" color={object.color} />
-            }
-          >
-            <BodyMesh map={object.map} />
-          </Suspense>
-        </mesh>
-        <Icosahedron args={[radius, 6]} onClick={onClick}>
-          <meshBasicMaterial attach="material" color={object.color} wireframe />
-          {label}
-        </Icosahedron>
-      </Detailed>
-      <Orbit object={object} />
-    </>
+    <Detailed distances={[0, radius * 20]}>
+      <mesh onClick={onClick}>
+        <sphereGeometry
+          attach="geometry"
+          args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
+        />
+        <Suspense
+          fallback={
+            <meshLambertMaterial attach="material" color={object.color} />
+          }
+        >
+          <BodyMesh map={object.map} />
+        </Suspense>
+      </mesh>
+      <Icosahedron args={[radius, 6]} onClick={onClick}>
+        <meshBasicMaterial attach="material" color={object.color} wireframe />
+        {label}
+      </Icosahedron>
+    </Detailed>
   );
 };
 
@@ -128,11 +123,41 @@ const Stars = () => {
   );
 };
 
+const TargetCamera = () => {
+  // This camera is designed to be attached to a parent, which can then orbit around.
+  // This is usually impossible for OrbitControls, which expects the camera not to be attached to anything moving/rotating
+  // (https://github.com/mrdoob/three.js/pull/16374#issuecomment-489465084)
+  const { targetCameraRef, orbitControlsCameraRef } = useVisualiser();
+  useFrame(() => {
+    // In each frame, copy the position of OrbitControl's camera
+    // https://stackoverflow.com/a/53298655
+    if (orbitControlsCameraRef.current) {
+      targetCameraRef.current.copy(orbitControlsCameraRef.current);
+    }
+  });
+  return (
+    <PerspectiveCamera
+      makeDefault
+      fov={VIEW_ANGLE}
+      near={NEAR}
+      far={ORBIT_MAX_UNITS * 4}
+      ref={targetCameraRef}
+      position={[0, 10, 10]}
+    />
+  );
+};
+
 const Visualiser = () => {
   const ContextBridge = useContextBridge(SolarSystemContext, VisualiserContext);
+
   const { objects } = useSolarSystem();
-  const { currentTargetPosition, currentTargetObject, scaleFactor, cameraRef } =
-    useVisualiser();
+  const {
+    currentTargetName,
+    realToVisualised,
+    currentTargetObject,
+    scaleFactor,
+    orbitControlsCameraRef,
+  } = useVisualiser();
 
   return (
     <>
@@ -141,30 +166,26 @@ const Visualiser = () => {
           <Stats />
           <ContextBridge>
             <OrbitControls
-              camera={cameraRef.current}
-              enableDamping={true}
-              target={currentTargetPosition}
+              camera={orbitControlsCameraRef.current}
               maxDistance={ORBIT_MAX_UNITS * 2}
               minDistance={currentTargetObject.radius * 1000 * scaleFactor * 50}
-            />
-            <PerspectiveCamera
-              makeDefault
-              fov={VIEW_ANGLE}
-              near={NEAR}
-              far={ORBIT_MAX_UNITS * 4}
-              ref={cameraRef}
-              position={[0, 70, 0]}
             />
             <Suspense fallback={<>Loading</>}>
               <Stars />
             </Suspense>
-            {objects.map((object) =>
-              object.star ? (
-                <Star key={object.name} object={object} />
-              ) : (
-                <Planet key={object.name} object={object} key={object.name} />
-              )
-            )}
+            {objects.map((object) => (
+              <Fragment key={object.name}>
+                <group position={realToVisualised(object.position)}>
+                  {object.name === currentTargetName && <TargetCamera />}
+                  {object.star ? (
+                    <Star key={object.name} object={object} />
+                  ) : (
+                    <Planet key={object.name} object={object} />
+                  )}
+                </group>
+                {object.lastOrbit && <Orbit object={object} />}
+              </Fragment>
+            ))}
           </ContextBridge>
         </Canvas>
       </div>

@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 import { Vector3 } from "three";
 
 import { useSolarSystem } from "./SolarSystemProvider";
@@ -8,7 +14,8 @@ const ORBIT_MAX_UNITS = 500;
 export const VisualiserContext = createContext({});
 
 const VisualiserProvider = ({ children }) => {
-  const cameraRef = useRef();
+  const targetCameraRef = useRef();
+  const orbitControlsCameraRef = useRef();
   const { objects, lastObject } = useSolarSystem();
 
   const furthestOrbitMeters = auToMeters(
@@ -22,8 +29,18 @@ const VisualiserProvider = ({ children }) => {
   const currentTargetObject = objects.find(({ name }) => name === targetName);
   const currentTargetPosition = realToVisualised(currentTargetObject.position);
 
+  useEffect(() => {
+    // When a new TargetCamera is attached, targetCameraRef.current will update
+    // Clone the new camera so we can provide it to OrbitControls
+    // (https://stackoverflow.com/a/53298655)
+    if (targetCameraRef.current) {
+      orbitControlsCameraRef.current = targetCameraRef.current.clone();
+    }
+  }, [targetCameraRef.current]);
+
   const value = {
-    cameraRef,
+    targetCameraRef,
+    orbitControlsCameraRef,
     currentTargetName: targetName,
     setTargetName,
     currentTargetObject,
