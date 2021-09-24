@@ -163,6 +163,7 @@ const Visualiser = () => {
     <>
       <div id="visualizer-container">
         <Canvas>
+          <color attach="background" args={["black"]} />
           <Stats />
           <ContextBridge>
             <OrbitControls
