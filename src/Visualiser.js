@@ -20,10 +20,10 @@ import { ORBIT_POINTS } from "./constants";
 import { VisualiserContext, useVisualiser } from "./VisualiserProvider";
 
 const NEAR = 0.001;
-const VIEW_ANGLE = 45;
+const VIEW_ANGLE = 80;
 const SPHERE_SEGMENTS = 16;
 const SPHERE_RINGS = 16;
-const ORBIT_MAX_UNITS = 500;
+const ORBIT_MAX_UNITS = 5000;
 const HOVER_COLOR = "white";
 
 const BodyMesh = ({ map }) => {
@@ -184,8 +184,8 @@ const Visualiser = () => {
         <ContextBridge>
           <OrbitControls
             camera={orbitControlsCameraRef.current}
-            maxDistance={ORBIT_MAX_UNITS * 2}
-            minDistance={currentTargetObject.radius * 1000 * scaleFactor * 50}
+            maxDistance={ORBIT_MAX_UNITS * 0.4}
+            minDistance={currentTargetObject.radius * 1000 * scaleFactor * 15}
           />
           <Suspense fallback={<>Loading</>}>
             <Stars />
