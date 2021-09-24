@@ -187,6 +187,7 @@ const Visualiser = () => {
             camera={orbitControlsCameraRef.current}
             maxDistance={ORBIT_MAX_UNITS * 0.4}
             minDistance={currentTargetObject.radius * 1000 * scaleFactor * 15}
+            enablePan={false}
           />
           <Suspense fallback={<>Loading</>}>
             <Stars />
