@@ -12,6 +12,12 @@ import {
   Html,
 } from "@react-three/drei";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
+import {
+  EffectComposer,
+  Noise,
+  Vignette,
+  GodRays,
+} from "@react-three/postprocessing";
 
 import { SolarSystemContext, useSolarSystem } from "./SolarSystemProvider";
 
@@ -32,31 +38,24 @@ const BodyMesh = ({ map }) => {
 };
 
 const Star = ({ object }) => {
-  const { scaleFactor, setTargetName } = useVisualiser();
+  const { scaleFactor, setTargetName, sunMeshRef } = useVisualiser();
   const radius = object.radius * 1000 * scaleFactor * 10;
   const onClick = () => setTargetName(object.name);
   return (
     <>
-      <Detailed distances={[0, radius * 20]}>
-        <mesh onClick={onClick}>
-          <sphereGeometry
-            attach="geometry"
-            args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
-          />
-          <Suspense
-            fallback={
-              <meshLambertMaterial attach="material" color={object.color} />
-            }
-          >
-            <BodyMesh map={object.map} />
-          </Suspense>
-          <pointLight color="white" intensity={0.1} distance={0} />
-          <ambientLight color="white" intensity={0.1} />
-        </mesh>
-        <Icosahedron args={[radius, 3]}>
-          <meshBasicMaterial attach="material" color={object.color} wireframe />
-        </Icosahedron>
-      </Detailed>
+      <mesh onClick={onClick} ref={sunMeshRef}>
+        <sphereGeometry
+          attach="geometry"
+          args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
+        />
+        <Suspense
+          fallback={
+            <meshLambertMaterial attach="material" color={object.color} />
+          }
+        >
+          <BodyMesh map={object.map} />
+        </Suspense>
+      </mesh>
       <ObjectLabel object={object} onClick={onClick} />
     </>
   );
@@ -167,7 +166,6 @@ const TargetCamera = () => {
 
 const Visualiser = () => {
   const ContextBridge = useContextBridge(SolarSystemContext, VisualiserContext);
-
   const { objects } = useSolarSystem();
   const {
     currentTargetName,
@@ -175,6 +173,7 @@ const Visualiser = () => {
     currentTargetObject,
     scaleFactor,
     orbitControlsCameraRef,
+    sunMeshRef,
   } = useVisualiser();
 
   return (
@@ -206,6 +205,19 @@ const Visualiser = () => {
             </Fragment>
           ))}
         </ContextBridge>
+        <EffectComposer>
+          <Noise opacity={0.01} />
+          <Vignette eskil={false} offset={0.1} darkness={0.7} />
+          {sunMeshRef.current && (
+            <GodRays
+              sun={sunMeshRef.current}
+              density={0.5}
+              decay={1.0}
+              weight={0.1}
+              clampMax={0.6}
+            />
+          )}
+        </EffectComposer>
       </Canvas>
     </div>
   );

@@ -16,6 +16,7 @@ export const VisualiserContext = createContext({});
 const VisualiserProvider = ({ children }) => {
   const targetCameraRef = useRef();
   const orbitControlsCameraRef = useRef();
+  const sunMeshRef = useRef();
   const { objects, lastObject } = useSolarSystem();
 
   const furthestOrbitMeters = auToMeters(
@@ -50,6 +51,7 @@ const VisualiserProvider = ({ children }) => {
   const value = {
     targetCameraRef,
     orbitControlsCameraRef,
+    sunMeshRef,
     currentTargetName: targetName,
     setTargetName,
     currentTargetObject,
