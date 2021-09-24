@@ -1,13 +1,17 @@
 import React from "react";
 
 import Visualiser from "./Visualiser.js";
-import ControlPanel from "./ControlPanel.js";
+import TargetPanel from "./TargetPanel.js";
+import ClockPanel from "./ClockPanel";
+import ObjectsPanel from "./ObjectsPanel";
 
 const App = () => {
   return (
     <div id="container">
       <Visualiser />
-      <ControlPanel />
+      <TargetPanel />
+      <ClockPanel />
+      <ObjectsPanel />
     </div>
   );
 };

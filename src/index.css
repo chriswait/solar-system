@@ -16,31 +16,53 @@ body {
   height: 100vh;
 }
 
-#control-panel-container {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 20;
-}
-#control-panel-button {
-  position: fixed;
-  right: 0;
-  top: 0;
-  color: "white";
-}
-#control-panel {
-  padding: 10px;
-  width: 300px;
-  height: 100vh;
-  background-color: #12181f;
-  color: white;
-  overflow-y: scroll;
-}
-#control-panel .row {
+.row {
   display: flex;
 }
-#control-panel .row *:first-child {
+.row *:first-child {
   min-width: 100px;
   margin-right: 10px;
   flex-shrink: 0;
+}
+
+#target-panel-container {
+  top: 0;
+  right: 0;
+}
+#clock-control-container {
+  bottom: 0;
+  left: 0;
+}
+#objects-control-container {
+  bottom: 0;
+  right: 0;
+}
+
+.panel-container {
+  position: absolute;
+  z-index: 20;
+  border: 2px solid cyan;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px;
+  color: white;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+}
+.panel-heading h3 {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.panel-button {
+  margin-left: 10px;
+  min-width: 50px;
+}
+.panel {
+  min-width: 100px;
+  max-height: 300px;
+  overflow-y: scroll;
+  padding: 10px;
 }
