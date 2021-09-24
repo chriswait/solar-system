@@ -21,14 +21,14 @@ import { VisualiserContext, useVisualiser } from "./VisualiserProvider";
 
 const NEAR = 0.001;
 const VIEW_ANGLE = 80;
-const SPHERE_SEGMENTS = 16;
-const SPHERE_RINGS = 16;
+const SPHERE_SEGMENTS = 64;
+const SPHERE_RINGS = 64;
 const ORBIT_MAX_UNITS = 5000;
 const HOVER_COLOR = "white";
 
 const BodyMesh = ({ map }) => {
   const mapTexture = useLoader(TextureLoader, map);
-  return <meshBasicMaterial attach="material" map={mapTexture} rotation={1} />;
+  return <meshBasicMaterial attach="material" map={mapTexture} />;
 };
 
 const Star = ({ object }) => {
