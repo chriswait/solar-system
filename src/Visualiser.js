@@ -93,6 +93,7 @@ const ObjectLabel = ({ object, onClick }) => (
       backgroundColor: "black",
       padding: 5,
     }}
+    zIndexRange={[20, 0]}
   >
     <div onClick={onClick}>{object.name}</div>
   </Html>
