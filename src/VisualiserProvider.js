@@ -38,6 +38,15 @@ const VisualiserProvider = ({ children }) => {
     }
   }, [targetCameraRef.current]);
 
+  useEffect(() => {
+    // When the current target changes, reposition the camera(s)
+    if (orbitControlsCameraRef.current) {
+      const radius = currentTargetObject.radius * 1000 * scaleFactor;
+      orbitControlsCameraRef.current.position.set(0.01, 0.01, 0.01);
+      targetCameraRef.current.copy(orbitControlsCameraRef.current);
+    }
+  }, [currentTargetObject.name]);
+
   const value = {
     targetCameraRef,
     orbitControlsCameraRef,
