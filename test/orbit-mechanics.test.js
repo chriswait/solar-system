@@ -1,6 +1,6 @@
-import SolarSystemData from "./data/solar-system";
-import { OrbitMechanics } from "./orbit-mechanics";
-import { degreesToRadians } from "./util";
+import SolarSystemData from "../src/data/solar-system";
+import { OrbitMechanics } from "../src/orbit-mechanics";
+import { degreesToRadians } from "../src/util";
 
 describe("can solve eccentric anomaly", function () {
   it("e=0.5, M=27 deg", function () {

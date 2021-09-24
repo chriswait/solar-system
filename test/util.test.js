@@ -3,7 +3,7 @@ import {
   degreesToRadians,
   modRadiansToCircle,
   radiansToDegrees,
-} from "./util";
+} from "../src/util";
 
 describe("util", function () {
   describe("can convert au to meters", function () {

@@ -1,9 +1,9 @@
 import React from "react";
 
-import Visualiser from "./Visualiser.js";
-import TargetPanel from "./TargetPanel.js";
-import ClockPanel from "./ClockPanel";
-import ObjectsPanel from "./ObjectsPanel";
+import Visualiser from "./Visualiser/Visualiser";
+import TargetPanel from "./Panels/TargetPanel";
+import ClockPanel from "./Panels/ClockPanel";
+import ObjectsPanel from "./Panels/ObjectsPanel";
 
 const App = () => {
   return (

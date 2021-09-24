@@ -1,5 +1,5 @@
 import React from "react";
-import { useClock } from "./ClockProvider";
+import { useClock } from "../ClockProvider";
 import Panel from "./Panel";
 
 const ClockPanel = () => {

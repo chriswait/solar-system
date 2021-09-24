@@ -1,4 +1,4 @@
-import { Clock } from "./clock";
+import { Clock } from "../src/clock";
 
 expect.extend({
   toBeNearMilliseconds(received, argument) {

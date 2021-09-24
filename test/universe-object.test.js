@@ -1,6 +1,6 @@
-import { UniverseObject } from "./universe-object";
-import SolarSystemData from "./data/solar-system";
-import { ORBIT_POINTS } from "./constants";
+import { UniverseObject } from "../src/universe-object";
+import SolarSystemData from "../src/data/solar-system";
+import { ORBIT_POINTS } from "../src/constants";
 
 let sunDictionary = SolarSystemData.objects[0];
 let earthDictionary = SolarSystemData.objects[3];

@@ -1,5 +1,5 @@
 import React from "react";
-import { useVisualiser } from "./VisualiserProvider";
+import { useVisualiser } from "../VisualiserProvider";
 import Panel from "./Panel";
 
 const TargetPanel = () => {

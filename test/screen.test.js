@@ -1,6 +1,6 @@
 import { Vector3 } from "three";
-import { Screen } from "./screen";
-import { auToMeters } from "./util";
+import { Screen } from "../src/screen";
+import { auToMeters } from "../src/util";
 
 let screen;
 

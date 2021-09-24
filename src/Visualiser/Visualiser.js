@@ -19,11 +19,11 @@ import {
   GodRays,
 } from "@react-three/postprocessing";
 
-import { SolarSystemContext, useSolarSystem } from "./SolarSystemProvider";
+import { SolarSystemContext, useSolarSystem } from "../SolarSystemProvider";
 
-import StarField from "./images/starfield.png";
-import { ORBIT_POINTS } from "./constants";
-import { VisualiserContext, useVisualiser } from "./VisualiserProvider";
+import StarField from "../images/starfield.png";
+import { ORBIT_POINTS } from "../constants";
+import { VisualiserContext, useVisualiser } from "../VisualiserProvider";
 
 const NEAR = 0.001;
 const VIEW_ANGLE = 80;

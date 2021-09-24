@@ -1,6 +1,6 @@
 import React from "react";
-import { useSolarSystem } from "./SolarSystemProvider";
-import { useVisualiser } from "./VisualiserProvider";
+import { useSolarSystem } from "../SolarSystemProvider";
+import { useVisualiser } from "../VisualiserProvider";
 import Panel from "./Panel";
 
 const ObjectsPanel = () => {
