@@ -34,27 +34,31 @@ const BodyMesh = ({ map }) => {
 const Star = ({ object }) => {
   const { scaleFactor, setTargetName } = useVisualiser();
   const radius = object.radius * 1000 * scaleFactor * 10;
+  const onClick = () => setTargetName(object.name);
   return (
-    <Detailed distances={[0, radius * 20]}>
-      <mesh onClick={() => setTargetName(object.name)}>
-        <sphereGeometry
-          attach="geometry"
-          args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
-        />
-        <Suspense
-          fallback={
-            <meshLambertMaterial attach="material" color={object.color} />
-          }
-        >
-          <BodyMesh map={object.map} />
-        </Suspense>
-        <pointLight color="white" intensity={0.1} distance={0} />
-        <ambientLight color="white" intensity={0.1} />
-      </mesh>
-      <Icosahedron args={[radius, 3]}>
-        <meshBasicMaterial attach="material" color={object.color} wireframe />
-      </Icosahedron>
-    </Detailed>
+    <>
+      <Detailed distances={[0, radius * 20]}>
+        <mesh onClick={onClick}>
+          <sphereGeometry
+            attach="geometry"
+            args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
+          />
+          <Suspense
+            fallback={
+              <meshLambertMaterial attach="material" color={object.color} />
+            }
+          >
+            <BodyMesh map={object.map} />
+          </Suspense>
+          <pointLight color="white" intensity={0.1} distance={0} />
+          <ambientLight color="white" intensity={0.1} />
+        </mesh>
+        <Icosahedron args={[radius, 3]}>
+          <meshBasicMaterial attach="material" color={object.color} wireframe />
+        </Icosahedron>
+      </Detailed>
+      <ObjectLabel object={object} onClick={onClick} />
+    </>
   );
 };
 
@@ -78,35 +82,48 @@ const Orbit = ({ object }) => {
   );
 };
 
+const ObjectLabel = ({ object, onClick }) => (
+  <Html
+    style={{
+      color: "white",
+      borderWidth: 2,
+      borderStyle: "solid",
+      borderColor: object.color,
+      borderRadius: 5,
+      backgroundColor: "black",
+      padding: 5,
+    }}
+  >
+    <div onClick={onClick}>{object.name}</div>
+  </Html>
+);
+
 const Planet = ({ object }) => {
-  const { scaleFactor, setTargetName } = useVisualiser();
+  const { scaleFactor, setTargetName, currentTargetName } = useVisualiser();
   const radius = object.radius * 1000 * scaleFactor * 10;
   const onClick = () => setTargetName(object.name);
-  const label = (
-    <Html style={{ color: "white" }}>
-      <div onClick={onClick}>{object.name}</div>
-    </Html>
-  );
   return (
-    <Detailed distances={[0, radius * 20]}>
-      <mesh onClick={onClick}>
-        <sphereGeometry
-          attach="geometry"
-          args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
-        />
-        <Suspense
-          fallback={
-            <meshLambertMaterial attach="material" color={object.color} />
-          }
-        >
-          <BodyMesh map={object.map} />
-        </Suspense>
-      </mesh>
-      <Icosahedron args={[radius, 6]} onClick={onClick}>
-        <meshBasicMaterial attach="material" color={object.color} wireframe />
-        {label}
-      </Icosahedron>
-    </Detailed>
+    <>
+      <Detailed distances={[0, radius * 20]}>
+        <mesh onClick={onClick}>
+          <sphereGeometry
+            attach="geometry"
+            args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
+          />
+          <Suspense
+            fallback={
+              <meshLambertMaterial attach="material" color={object.color} />
+            }
+          >
+            <BodyMesh map={object.map} />
+          </Suspense>
+        </mesh>
+        <Icosahedron args={[radius, 6]} onClick={onClick}>
+          <meshBasicMaterial attach="material" color={object.color} wireframe />
+        </Icosahedron>
+      </Detailed>
+      <ObjectLabel object={object} onClick={onClick} />
+    </>
   );
 };
 
@@ -160,37 +177,35 @@ const Visualiser = () => {
   } = useVisualiser();
 
   return (
-    <>
-      <div id="visualizer-container">
-        <Canvas>
-          <color attach="background" args={["black"]} />
-          <Stats />
-          <ContextBridge>
-            <OrbitControls
-              camera={orbitControlsCameraRef.current}
-              maxDistance={ORBIT_MAX_UNITS * 2}
-              minDistance={currentTargetObject.radius * 1000 * scaleFactor * 50}
-            />
-            <Suspense fallback={<>Loading</>}>
-              <Stars />
-            </Suspense>
-            {objects.map((object) => (
-              <Fragment key={object.name}>
-                <group position={realToVisualised(object.position)}>
-                  {object.name === currentTargetName && <TargetCamera />}
-                  {object.star ? (
-                    <Star key={object.name} object={object} />
-                  ) : (
-                    <Planet key={object.name} object={object} />
-                  )}
-                </group>
-                {object.lastOrbit && <Orbit object={object} />}
-              </Fragment>
-            ))}
-          </ContextBridge>
-        </Canvas>
-      </div>
-    </>
+    <div id="visualizer-container">
+      <Canvas>
+        <color attach="background" args={["black"]} />
+        <Stats />
+        <ContextBridge>
+          <OrbitControls
+            camera={orbitControlsCameraRef.current}
+            maxDistance={ORBIT_MAX_UNITS * 2}
+            minDistance={currentTargetObject.radius * 1000 * scaleFactor * 50}
+          />
+          <Suspense fallback={<>Loading</>}>
+            <Stars />
+          </Suspense>
+          {objects.map((object) => (
+            <Fragment key={object.name}>
+              <group position={realToVisualised(object.position)}>
+                {object.name === currentTargetName && <TargetCamera />}
+                {object.star ? (
+                  <Star key={object.name} object={object} />
+                ) : (
+                  <Planet key={object.name} object={object} />
+                )}
+              </group>
+              {object.lastOrbit && <Orbit object={object} />}
+            </Fragment>
+          ))}
+        </ContextBridge>
+      </Canvas>
+    </div>
   );
 };
 export default Visualiser;
