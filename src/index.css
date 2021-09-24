@@ -13,11 +13,6 @@ body {
 }
 
 #visualizer-container {
-  position: relative;
-}
-#visualizer-container,
-#solar-system-canvas,
-#overlay {
   width: 100%;
   height: 100vh;
 }
@@ -30,7 +25,6 @@ body {
   color: white;
   z-index: 1;
   overflow-y: scroll;
-  overflow-x: hidden;
 }
 #control-panel .row {
   display: flex;
@@ -39,24 +33,4 @@ body {
   min-width: 100px;
   margin-right: 10px;
   flex-shrink: 0;
-}
-.selected {
-  color: red;
-}
-
-.overlay-object {
-  position: absolute;
-  color: white;
-  border-radius: 50%;
-  border-width: 2px;
-  border-style: solid;
-  border-color: skyblue;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-.overlay-object:hover {
-  border-color: red;
-}
-.overlay-label {
-  pointer-events: auto;
 }
