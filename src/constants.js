@@ -11,5 +11,5 @@ export const NEAR = 0.001;
 export const VIEW_ANGLE = 80;
 export const SPHERE_SEGMENTS = 64;
 export const SPHERE_RINGS = 64;
-export const ORBIT_MAX_UNITS = 5000;
+export const ORBIT_MAX_UNITS = 1000;
 export const HOVER_COLOR = "white";

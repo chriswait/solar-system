@@ -1,17 +1,10 @@
 import React, { useCallback } from "react";
-import { useVisualiser } from "../VisualiserProvider";
-import { ORBIT_POINTS } from "../constants";
+import { Line } from "@react-three/drei";
 
 const Orbit = ({ object }) => {
-  const { realToVisualised } = useVisualiser();
-  const points = [];
-  for (let i = 0; i < ORBIT_POINTS; i++) {
-    points.push(realToVisualised(object.lastOrbit[i]));
-  }
-  points.push(realToVisualised(object.lastOrbit[0]));
   const orbitGeometryRef = useCallback((node) => {
     if (node) {
-      node.setFromPoints(points);
+      node.setFromPoints(object.orbitPoints3d);
     }
   });
   return (

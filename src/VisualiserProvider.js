@@ -9,7 +9,7 @@ import { Vector3 } from "three";
 
 import { useSolarSystem } from "./SolarSystemProvider";
 import { auToMeters } from "./util";
-const ORBIT_MAX_UNITS = 500;
+import { ORBIT_MAX_UNITS, ORBIT_POINTS } from "./constants";
 
 export const VisualiserContext = createContext({});
 
@@ -26,12 +26,22 @@ const VisualiserProvider = ({ children }) => {
   const realToVisualised = ({ x, y, z }) =>
     new Vector3(x, z, y).multiplyScalar(scaleFactor);
 
+  const calculateOrbitPoints = (object) => {
+    const points = [];
+    for (let i = 0; i < ORBIT_POINTS; i++) {
+      points.push(realToVisualised(object.lastOrbit[i]));
+    }
+    points.push(realToVisualised(object.lastOrbit[0]));
+    return points;
+  };
+
   const [targetName, setTargetName] = useState("sun");
 
   const objectsWith3DPositions = objects.map((object) => ({
     ...object,
     position3d: realToVisualised(object.position),
     radius3d: object.radius * 1000 * scaleFactor * 10,
+    orbitPoints3d: object.lastOrbit ? calculateOrbitPoints(object) : undefined,
   }));
 
   const currentTargetObject = objectsWith3DPositions.find(
