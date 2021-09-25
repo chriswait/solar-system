@@ -36,7 +36,7 @@ const Visualiser = () => {
         <ContextBridge>
           <OrbitControls
             camera={orbitControlsCameraRef.current}
-            maxDistance={ORBIT_MAX_UNITS * 0.4}
+            maxDistance={ORBIT_MAX_UNITS * 1.5}
             minDistance={currentTargetObject.radius3d * 1.5}
             enablePan={false}
           />
