@@ -7,16 +7,15 @@ import BodyMesh from "./BodyMesh";
 import ObjectLabel from "./ObjectLabel";
 
 const Planet = ({ object }) => {
-  const { scaleFactor, setTargetName, currentTargetName } = useVisualiser();
-  const radius = object.radius * 1000 * scaleFactor * 10;
+  const { setTargetName } = useVisualiser();
   const onClick = () => setTargetName(object.name);
   return (
     <>
-      <Detailed distances={[0, radius * 20]}>
+      <Detailed distances={[0, object.radius3d * 20]}>
         <mesh onClick={onClick}>
           <sphereGeometry
             attach="geometry"
-            args={[radius, SPHERE_SEGMENTS, SPHERE_RINGS]}
+            args={[object.radius3d, SPHERE_SEGMENTS, SPHERE_RINGS]}
           />
           <Suspense
             fallback={
@@ -26,7 +25,7 @@ const Planet = ({ object }) => {
             <BodyMesh map={object.map} />
           </Suspense>
         </mesh>
-        <Icosahedron args={[radius, 6]} onClick={onClick}>
+        <Icosahedron args={[object.radius3d, 6]} onClick={onClick}>
           <meshBasicMaterial attach="material" color={object.color} wireframe />
         </Icosahedron>
       </Detailed>

@@ -3,9 +3,9 @@ import { Html } from "@react-three/drei";
 import { useVisualiser } from "../VisualiserProvider";
 
 const ObjectLabel = ({ object, onClick }) => {
-  const { targetCameraRef, scaleFactor } = useVisualiser();
-  const radius = object.radius * 1000 * scaleFactor * 10;
-  const cameraDistance = targetCameraRef.current?.position.length() - radius;
+  const { targetCameraRef } = useVisualiser();
+  const cameraDistance =
+    targetCameraRef.current?.position.length() - object.radius3d;
   return (
     cameraDistance > 0.03 && (
       <Html

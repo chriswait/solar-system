@@ -27,8 +27,16 @@ const VisualiserProvider = ({ children }) => {
     new Vector3(x, z, y).multiplyScalar(scaleFactor);
 
   const [targetName, setTargetName] = useState("sun");
-  const currentTargetObject = objects.find(({ name }) => name === targetName);
-  const currentTargetPosition = realToVisualised(currentTargetObject.position);
+
+  const objectsWith3DPositions = objects.map((object) => ({
+    ...object,
+    position3d: realToVisualised(object.position),
+    radius3d: object.radius * 1000 * scaleFactor * 10,
+  }));
+
+  const currentTargetObject = objectsWith3DPositions.find(
+    ({ name }) => name === targetName
+  );
 
   useEffect(() => {
     // When a new TargetCamera is attached, targetCameraRef.current will update
@@ -42,13 +50,14 @@ const VisualiserProvider = ({ children }) => {
   useEffect(() => {
     // When the current target changes, reposition the camera(s)
     if (orbitControlsCameraRef.current) {
-      const radius = currentTargetObject.radius * 1000 * scaleFactor;
+      // const radius = currentTargetObject.radius3d;
       orbitControlsCameraRef.current.position.set(0.01, 0.01, 0.01);
       targetCameraRef.current.copy(orbitControlsCameraRef.current);
     }
   }, [currentTargetObject.name]);
 
   const value = {
+    objects: objectsWith3DPositions,
     targetCameraRef,
     orbitControlsCameraRef,
     sunMeshRef,
@@ -58,7 +67,6 @@ const VisualiserProvider = ({ children }) => {
     scaleFactor,
     realToVisualised,
     currentTargetObject,
-    currentTargetPosition,
   };
 
   return (

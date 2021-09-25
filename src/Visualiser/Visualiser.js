@@ -20,12 +20,10 @@ import Star from "./Star";
 
 const Visualiser = () => {
   const ContextBridge = useContextBridge(SolarSystemContext, VisualiserContext);
-  const { objects } = useSolarSystem();
   const {
+    objects,
     currentTargetName,
-    realToVisualised,
     currentTargetObject,
-    scaleFactor,
     orbitControlsCameraRef,
     sunMeshRef,
   } = useVisualiser();
@@ -39,7 +37,7 @@ const Visualiser = () => {
           <OrbitControls
             camera={orbitControlsCameraRef.current}
             maxDistance={ORBIT_MAX_UNITS * 0.4}
-            minDistance={currentTargetObject.radius * 1000 * scaleFactor * 15}
+            minDistance={currentTargetObject.radius3d * 1.5}
             enablePan={false}
           />
           <Suspense fallback={<>Loading</>}>
@@ -47,7 +45,7 @@ const Visualiser = () => {
           </Suspense>
           {objects.map((object) => (
             <Fragment key={object.name}>
-              <group position={realToVisualised(object.position)}>
+              <group position={object.position3d}>
                 {object.name === currentTargetName && <TargetCamera />}
                 {object.star ? (
                   <Star key={object.name} object={object} />

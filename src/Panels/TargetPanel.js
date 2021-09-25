@@ -3,18 +3,18 @@ import { useVisualiser } from "../VisualiserProvider";
 import Panel from "./Panel";
 
 const TargetPanel = () => {
-  const { currentTargetName, currentTargetPosition } = useVisualiser();
+  const { currentTargetName, currentTargetObject } = useVisualiser();
   const displayName =
     currentTargetName[0].toUpperCase() + currentTargetName.substring(1);
   return (
     <div id="target-panel-container" className="panel-container">
       <Panel title={`Target: ${displayName}`}>
-        {currentTargetPosition && (
+        {currentTargetObject && (
           <div>
             Position
             {["x", "y", "z"].map((key) => (
               <div key={key}>
-                {key}: {currentTargetPosition[key].toFixed(3)}
+                {key}: {currentTargetObject.position3d[key].toFixed(3)}
               </div>
             ))}
           </div>
