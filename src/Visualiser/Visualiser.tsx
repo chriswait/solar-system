@@ -1,6 +1,6 @@
 import { Suspense, Fragment } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Sparkles, Stars, useContextBridge } from "@react-three/drei";
+import { OrbitControls, Stars, useContextBridge } from "@react-three/drei";
 import { EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 import { Perf } from "r3f-perf";
 
