@@ -4,54 +4,45 @@
   "repository": "https://github.com/chriswait/solar-system.git",
   "license": "MIT",
   "author": "chriswait <chriswait91@gmail.com>",
-  "main": "index.js",
+  "type": "module",
+  "main": "main.tsx",
   "scripts": {
-    "start": "webpack serve --open --mode development",
-    "test": "jest --watch",
-    "build": "webpack --mode production"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "test": "jest"
   },
   "dependencies": {
-    "@react-three/drei": "^7.8.5",
-    "@react-three/fiber": "^7.0.7",
-    "@react-three/postprocessing": "^2.0.5",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "three": "^0.132.2"
+    "@react-three/drei": "^9.97.0",
+    "@react-three/fiber": "^8.15.16",
+    "@react-three/postprocessing": "^2.15.13",
+    "r3f-perf": "^7.1.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "three": "^0.161.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.5",
-    "@babel/preset-env": "^7.15.6",
-    "@babel/preset-react": "^7.14.5",
-    "babel-eslint": "^10.1.0",
-    "babel-jest": "^27.1.0",
-    "babel-loader": "^8.2.2",
-    "css-loader": "^6.3.0",
-    "eslint": "^7.32.0",
-    "eslint-loader": "^4.0.2",
-    "eslint-plugin-babel": "^5.3.1",
-    "eslint-webpack-plugin": "^3.0.1",
-    "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^5.3.2",
-    "jest": "^27.2.0",
-    "node-notifier": "^10.0.0",
-    "style-loader": "^3.2.1",
-    "webpack": "^5.53.0",
-    "webpack-cli": "^4.8.0",
-    "webpack-dev-server": "^4.2.1"
-  },
-  "jest": {
-    "collectCoverage": true,
-    "moduleDirectories": [
-      "node_modules"
-    ],
-    "moduleFileExtensions": [
-      "js"
-    ],
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
-    },
-    "notify": true,
-    "notifyMode": "failure"
+    "@babel/preset-env": "^7.23.9",
+    "@babel/preset-react": "^7.23.3",
+    "@testing-library/jest-dom": "^6.4.1",
+    "@testing-library/react": "^14.2.1",
+    "@types/jest": "^29.5.12",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@types/three": "^0.161.2",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "node-notifier": "^10.0.1",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8"
   }
 }
